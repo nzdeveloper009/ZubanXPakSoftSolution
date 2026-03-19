@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_onboarding"
+    android:label="Onboarding"
+    app:startDestination="@id/placeholderFragment">
+
+    <fragment
+        android:id="@+id/placeholderFragment"
+        android:name="com.android.zubanx.feature.placeholder.PlaceholderFragment"
+        android:label="Placeholder" />
+
+    <!-- SplashFragment and OnboardingFragment added in Plan 4 — remove placeholderFragment then -->
+</navigation>

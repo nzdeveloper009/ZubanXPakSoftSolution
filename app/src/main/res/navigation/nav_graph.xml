@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_onboarding">
+
+    <include app:graph="@navigation/nav_onboarding" />
+    <include app:graph="@navigation/nav_translate" />
+    <include app:graph="@navigation/nav_conversation" />
+    <include app:graph="@navigation/nav_dictionary" />
+    <include app:graph="@navigation/nav_idioms" />
+    <include app:graph="@navigation/nav_phrases" />
+    <include app:graph="@navigation/nav_story" />
+    <include app:graph="@navigation/nav_settings" />
+    <include app:graph="@navigation/nav_premium" />
+    <include app:graph="@navigation/nav_favourite" />
+    <include app:graph="@navigation/nav_onscreen" />
+    <include app:graph="@navigation/nav_imagetext" />
+
+</navigation>
