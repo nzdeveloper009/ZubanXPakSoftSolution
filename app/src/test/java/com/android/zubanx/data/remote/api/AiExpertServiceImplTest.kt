@@ -27,18 +27,21 @@ class AiExpertServiceImplTest {
     fun `ask with GEMINI expert returns Error — stub not yet implemented`() = runTest {
         val result = service.ask(expert = "GEMINI", prompt = "Explain 'run'")
         assertTrue(result is NetworkResult.Error)
+        assertTrue((result as NetworkResult.Error).message.contains("not implemented", ignoreCase = true))
     }
 
     @Test
     fun `ask with CLAUDE expert returns Error — stub not yet implemented`() = runTest {
         val result = service.ask(expert = "CLAUDE", prompt = "Translate 'cat'")
         assertTrue(result is NetworkResult.Error)
+        assertTrue((result as NetworkResult.Error).message.contains("not implemented", ignoreCase = true))
     }
 
     @Test
     fun `ask with DEFAULT expert returns Error — stub not yet implemented`() = runTest {
         val result = service.ask(expert = "DEFAULT", prompt = "Translate 'dog'")
         assertTrue(result is NetworkResult.Error)
+        assertTrue((result as NetworkResult.Error).message.contains("not implemented", ignoreCase = true))
     }
 
     @Test
