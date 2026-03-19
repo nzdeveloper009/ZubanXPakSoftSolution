@@ -16,13 +16,13 @@ class EntityTest {
     }
 
     @Test
-    fun `DictionaryEntity stores examplesJson as string`() {
+    fun `DictionaryEntity stores examples as list`() {
         val entity = DictionaryEntity(
             word = "run", language = "en", definition = "to move",
-            examplesJson = """["I run daily"]""", timestamp = 2000L
+            examples = listOf("I run daily"), timestamp = 2000L
         )
         assertEquals("run", entity.word)
-        assertEquals("""["I run daily"]""", entity.examplesJson)
+        assertEquals(listOf("I run daily"), entity.examples)
     }
 
     @Test

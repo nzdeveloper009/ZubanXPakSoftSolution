@@ -34,7 +34,7 @@ class DictionaryDaoTest {
     fun insertAndGetByWordAndLanguage() = runTest {
         dao.insert(DictionaryEntity(
             word = "run", language = "en", definition = "to move fast",
-            examplesJson = """["I run daily"]""", timestamp = 1000L
+            examples = listOf("I run daily"), timestamp = 1000L
         ))
         val result = dao.getByWordAndLanguage("run", "en")
         assertNotNull(result)
@@ -51,7 +51,7 @@ class DictionaryDaoTest {
         repeat(2) { i ->
             dao.insert(DictionaryEntity(
                 word = "word$i", language = "en", definition = "def$i",
-                examplesJson = "[]", timestamp = i.toLong()
+                timestamp = i.toLong()
             ))
         }
         assertEquals(2, dao.getAll().first().size)

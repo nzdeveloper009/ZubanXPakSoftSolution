@@ -11,6 +11,6 @@ data class DictionaryEntity(
     val definition: String,
     val phonetic: String? = null,
     val partOfSpeech: String? = null,
-    val examplesJson: String = "[]",
+    val examples: List<String> = emptyList(),
     val timestamp: Long
 )

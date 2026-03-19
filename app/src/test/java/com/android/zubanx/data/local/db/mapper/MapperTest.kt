@@ -3,7 +3,6 @@ package com.android.zubanx.data.local.db.mapper
 import com.android.zubanx.data.local.db.entity.*
 import com.android.zubanx.domain.model.*
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MapperTest {
@@ -43,11 +42,11 @@ class MapperTest {
     }
 
     @Test
-    fun `DictionaryEntity toDomain deserializes examples`() {
+    fun `DictionaryEntity toDomain maps examples list`() {
         val entity = DictionaryEntity(
             id = 3L, word = "run", language = "en", definition = "to move fast",
             phonetic = "/rʌn/", partOfSpeech = "verb",
-            examplesJson = """["I run daily","She runs fast"]""", timestamp = 3000L
+            examples = listOf("I run daily", "She runs fast"), timestamp = 3000L
         )
         val model = entity.toDomain()
         assertEquals(2, model.examples.size)
@@ -55,13 +54,13 @@ class MapperTest {
     }
 
     @Test
-    fun `DictionaryEntry toEntity serializes examples`() {
+    fun `DictionaryEntry toEntity maps examples list`() {
         val model = DictionaryEntry(
             word = "run", language = "en", definition = "to move",
             examples = listOf("I run daily"), timestamp = 3000L
         )
         val entity = model.toEntity()
-        assertTrue(entity.examplesJson.contains("I run daily"))
+        assertEquals(listOf("I run daily"), entity.examples)
     }
 
     @Test
