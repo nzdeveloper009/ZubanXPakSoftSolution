@@ -44,9 +44,4 @@ class AiExpertServiceImplTest {
         assertTrue((result as NetworkResult.Error).message.contains("not implemented", ignoreCase = true))
     }
 
-    @Test
-    fun `AiExpertServiceImpl satisfies AiExpertService interface`() {
-        val impl: AiExpertService = AiExpertServiceImpl(client)
-        assertTrue(impl is AiExpertServiceImpl)
-    }
 }

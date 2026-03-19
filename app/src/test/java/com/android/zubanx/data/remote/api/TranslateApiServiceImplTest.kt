@@ -25,9 +25,4 @@ class TranslateApiServiceImplTest {
         assertTrue(msg.contains("not implemented", ignoreCase = true))
     }
 
-    @Test
-    fun `TranslateApiServiceImpl satisfies TranslateApiService interface`() {
-        val impl: TranslateApiService = TranslateApiServiceImpl(client)
-        assertTrue(impl is TranslateApiServiceImpl)
-    }
 }

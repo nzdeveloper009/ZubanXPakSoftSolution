@@ -24,9 +24,4 @@ class DictionaryApiServiceImplTest {
         assertTrue(msg.contains("not implemented", ignoreCase = true))
     }
 
-    @Test
-    fun `DictionaryApiServiceImpl satisfies DictionaryApiService interface`() {
-        val impl: DictionaryApiService = DictionaryApiServiceImpl(client)
-        assertTrue(impl is DictionaryApiServiceImpl)
-    }
 }
