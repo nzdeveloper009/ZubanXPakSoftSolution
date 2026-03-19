@@ -40,7 +40,7 @@ class OnboardingFragment : BaseFragment<FragmentOnboardingBinding>(FragmentOnboa
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 viewModel.onEvent(OnboardingContract.Event.PageChanged(position))
-                binding.btnNext.text = if (position == pages.lastIndex) "Done" else getString(R.string.btn_next)
+                binding.btnNext.text = if (position == pages.lastIndex) getString(R.string.btn_done) else getString(R.string.btn_next)
             }
         })
 
