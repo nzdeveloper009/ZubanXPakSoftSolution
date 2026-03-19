@@ -1,0 +1,14 @@
+package com.android.zubanx.core.utils
+
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+
+class ConnectivityUtils(
+    private val connectivityManager: ConnectivityManager
+) {
+    fun isOnline(): Boolean {
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+}
