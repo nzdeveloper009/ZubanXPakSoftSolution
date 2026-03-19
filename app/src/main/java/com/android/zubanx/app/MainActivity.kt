@@ -39,8 +39,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
          * Uncomment each ID as the corresponding fragment is added in feature plans.
          */
         private val BOTTOM_NAV_HIDDEN_DESTINATIONS = setOf<Int>(
-            // R.id.splashFragment,
-            // R.id.onboardingFragment,
+            R.id.splashFragment,
+            R.id.onboardingFragment,
             // R.id.premiumFragment,
             // R.id.wordDetailFragment,
         )
