@@ -32,6 +32,6 @@ class KeyDecryptionModuleTest {
         every { remoteConfig.getString("claude_key_enc") } returns "encryptedPayload=="
         val result = module.getDecryptedKey("claude_key_enc")
         // Stub: returns the raw value unchanged until AES cipher is wired in Plans 5-8
-        assertTrue(result.isNotEmpty())
+        assertEquals("encryptedPayload==", result)
     }
 }

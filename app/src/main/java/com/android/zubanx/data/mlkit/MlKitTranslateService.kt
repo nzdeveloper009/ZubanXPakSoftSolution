@@ -5,9 +5,9 @@ import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import timber.log.Timber
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * On-device translation service backed by ML Kit Translate.
@@ -43,19 +43,19 @@ class MlKitTranslateService {
         val translator = Translation.getClient(options)
         val conditions = DownloadConditions.Builder().build()
 
-        suspendCoroutine<Unit> { cont ->
+        suspendCancellableCoroutine<Unit> { cont ->
             translator.downloadModelIfNeeded(conditions)
                 .addOnSuccessListener {
                     Timber.d("MlKitTranslateService: model downloaded for $sourceLang→$targetLang")
+                    translator.close()
                     cont.resume(Unit)
                 }
                 .addOnFailureListener { exception ->
                     Timber.e(exception, "MlKitTranslateService: model download failed")
+                    translator.close()
                     cont.resumeWithException(exception)
                 }
         }
-
-        translator.close()
     }
 
     /**
@@ -73,7 +73,7 @@ class MlKitTranslateService {
             .build()
         val translator = Translation.getClient(options)
 
-        return suspendCoroutine { cont ->
+        return suspendCancellableCoroutine { cont ->
             translator.translate(text)
                 .addOnSuccessListener { translatedText ->
                     cont.resume(translatedText)
