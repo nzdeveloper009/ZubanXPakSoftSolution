@@ -5,23 +5,20 @@
     android:label="Onboarding"
     app:startDestination="@id/splashFragment">
 
-    <!-- TODO Task 13: replace with SplashFragment and OnboardingFragment -->
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.android.zubanx.feature.splash.SplashFragment"
         android:label="Splash">
         <action
             android:id="@+id/action_splash_to_onboarding"
-            app:destination="@id/onboardingFragment" />
+            app:destination="@id/onboardingFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out" />
     </fragment>
 
     <fragment
         android:id="@+id/onboardingFragment"
-        android:name="com.android.zubanx.feature.placeholder.PlaceholderFragment"
-        android:label="Onboarding">
-        <action
-            android:id="@+id/action_global_onboarding_to_translate"
-            app:destination="@id/nav_translate" />
-    </fragment>
+        android:name="com.android.zubanx.feature.onboarding.OnboardingFragment"
+        android:label="Onboarding" />
 
 </navigation>

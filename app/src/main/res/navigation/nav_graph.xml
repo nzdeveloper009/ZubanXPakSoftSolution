@@ -17,4 +17,12 @@
     <include app:graph="@navigation/nav_onscreen" />
     <include app:graph="@navigation/nav_imagetext" />
 
+    <action
+        android:id="@+id/action_global_onboarding_to_translate"
+        app:destination="@id/nav_translate"
+        app:enterAnim="@anim/scale_fade_in"
+        app:exitAnim="@anim/fade_out"
+        app:popUpTo="@id/nav_onboarding"
+        app:popUpToInclusive="true" />
+
 </navigation>
