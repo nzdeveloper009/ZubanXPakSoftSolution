@@ -34,7 +34,7 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_swap"
-            android:contentDescription="Swap languages" />
+            android:contentDescription="@string/phrases_cd_swap_languages" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTargetLang"

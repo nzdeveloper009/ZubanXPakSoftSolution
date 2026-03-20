@@ -27,7 +27,7 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_expand_more"
-            android:contentDescription="Expand" />
+            android:contentDescription="@string/phrases_cd_expand" />
 
     </LinearLayout>
 
@@ -74,7 +74,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Translation failed"
+                android:text="@string/phrases_translation_failed"
                 android:textAppearance="?attr/textAppearanceBodySmall" />
 
             <ImageButton
@@ -83,7 +83,7 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_refresh"
-                android:contentDescription="Retry" />
+                android:contentDescription="@string/phrases_cd_retry" />
 
         </LinearLayout>
 
@@ -100,7 +100,7 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_volume_up"
-                android:contentDescription="Speak" />
+                android:contentDescription="@string/phrases_cd_speak" />
 
             <ImageButton
                 android:id="@+id/btnCopy"
@@ -108,7 +108,7 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_copy"
-                android:contentDescription="Copy" />
+                android:contentDescription="@string/phrases_cd_copy" />
 
             <ImageButton
                 android:id="@+id/btnZoom"
@@ -116,7 +116,7 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_zoom_in"
-                android:contentDescription="Zoom" />
+                android:contentDescription="@string/phrases_cd_zoom" />
 
         </LinearLayout>
 
