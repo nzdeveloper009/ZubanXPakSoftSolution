@@ -80,7 +80,9 @@ fun getByCategory(category: String): Flow<List<Favourite>>
 |------|---------------|
 | `GetFavouritesByCategoryUseCase` | `operator fun invoke(category: String): Flow<List<Favourite>>` — delegates to repository |
 | `DeleteFavouriteUseCase` | `suspend operator fun invoke(id: Long)` — calls `repository.remove(id)` |
-| `AddDictionaryFavouriteUseCase` | `suspend operator fun invoke(word, definition, language)` — builds a `Favourite` with `category = DICTIONARY` and calls `repository.add()` |
+| `AddDictionaryFavouriteUseCase` | `suspend operator fun invoke(word: String, definition: String, language: String)` — builds a `Favourite(sourceText = word, translatedText = definition, sourceLang = language, targetLang = "", category = DICTIONARY, timestamp = currentTimeMillis())` and calls `repository.add()` |
+
+`AddDictionaryFavouriteUseCase` is called from `WordDetailFragment` / `WordDetailViewModel`. `WordDetailContract` gains a new `Event.ToggleFavourite` and `Effect.ShowFavourited`. A favourite icon button (`btnFavourite`) is added to `fragment_word_detail.xml`, toggling based on `FavouriteRepository.isFavourite(word)`.
 
 ### 1.7 AppPreferences — New Keys
 
@@ -156,20 +158,31 @@ enum class PlanType { WEEKLY, MONTHLY, YEARLY }
 
 ### 2.4 BillingManager Responsibilities
 
-1. **connect()** — calls `billingClient.startConnection(this)`. Retries on `BillingClient.BillingResponseCode.SERVICE_DISCONNECTED`.
-2. **queryProducts()** — called from `onBillingSetupFinished`. Queries all three subscription product IDs. Maps `ProductDetails` → `PremiumPlan` (price from `subscriptionOfferDetails`).
-3. **launchPurchaseFlow(activity, plan)** — called from Fragment. Builds `BillingFlowParams` with the matching `ProductDetails` and calls `billingClient.launchBillingFlow(activity, params)`.
-4. **onPurchasesUpdated(result, purchases)** — runs on main thread; immediately dispatches acknowledgment to IO:
+`BillingManager` has **no dependency on `AppPreferences`**. It only owns the Play Billing lifecycle and emits state. Writing `isPremium` to DataStore is the ViewModel's responsibility (Single Responsibility Principle).
+
+1. **connect()** — checks `billingClient.isReady` first (idempotent); if not ready calls `billingClient.startConnection(this)`. Retries on `BillingResponseCode.SERVICE_DISCONNECTED`.
+2. **queryProducts()** — called from `onBillingSetupFinished`. Queries all three subscription product IDs. Maps `ProductDetails` → `PremiumPlan` (price from `subscriptionOfferDetails`). Stores `ProductDetails` in a local map for use during purchase flow.
+3. **launchPurchaseFlow(activity, plan)** — called from Fragment. Looks up `ProductDetails` from local map by `plan.productId`. Builds `BillingFlowParams` and calls `billingClient.launchBillingFlow(activity, params)`.
+4. **onPurchasesUpdated(result, purchases)** — runs on main thread; immediately dispatches acknowledgment to IO via a `CoroutineScope(SupervisorJob() + Dispatchers.IO)` owned by `BillingManager`:
    ```kotlin
-   viewModelScope.launch(Dispatchers.IO) {
+   scope.launch {
        purchases?.filter { it.purchaseState == Purchase.PurchaseState.PURCHASED }
            ?.forEach { acknowledgePurchase(it) }
    }
    ```
-5. **acknowledgePurchase(purchase)** — calls `billingClient.acknowledgePurchase(...)`. On success, calls `appPreferences.setIsPremium(true)` and emits `BillingState.Purchased`.
-6. **restorePurchases()** — queries existing purchases via `billingClient.queryPurchasesAsync(QueryPurchasesParams)`.
+5. **acknowledgePurchase(purchase)** — calls `billingClient.acknowledgePurchase(...)`. On success, emits `BillingState.Purchased`. Does **not** touch `AppPreferences`.
+6. **restorePurchases()** — queries existing purchases via `billingClient.queryPurchasesAsync`. On finding an active subscription, emits `BillingState.Purchased`.
 
 `BillingManager` exposes `val billingState: StateFlow<BillingState>` backed by a `MutableStateFlow`.
+
+**`PremiumViewModel` handles `BillingState.Purchased`:**
+```kotlin
+BillingState.Purchased -> {
+    viewModelScope.launch { appPreferences.setIsPremium(true) }
+    setState { copy(isPremium = true) }
+    sendEffect(PremiumContract.Effect.NavigateBack)
+}
+```
 
 ---
 
@@ -191,7 +204,8 @@ object FavouriteContract {
 
     sealed class Event : UiEvent {
         data class TabSelected(val tab: Tab) : Event()
-        data class DeleteConfirmed(val id: Long) : Event()
+        data class RequestDelete(val id: Long) : Event()   // fired on swipe
+        data class DeleteConfirmed(val id: Long) : Event() // fired after dialog confirm
         data class ItemClicked(val item: Favourite) : Event()
         data class SpeakText(val text: String, val lang: String) : Event()
         data class CopyText(val text: String) : Event()
@@ -230,16 +244,40 @@ Layout: `fragment_favourite.xml`
 val callback = object : ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         val item = adapter.currentList[viewHolder.bindingAdapterPosition]
-        adapter.notifyItemChanged(viewHolder.bindingAdapterPosition) // restore immediately
-        viewModel.onEvent(FavouriteContract.Event.ItemClicked(item)) // triggers ConfirmDelete effect
+        adapter.notifyItemChanged(viewHolder.bindingAdapterPosition) // restore immediately — no visual delete
+        viewModel.onEvent(FavouriteContract.Event.RequestDelete(item.id))
     }
 }
 ```
-Fragment observes `Effect.ConfirmDelete` → shows `MaterialAlertDialog` → on positive button calls `onEvent(DeleteConfirmed(id))`.
+ViewModel handles `RequestDelete` → sends `Effect.ConfirmDelete(id)`.
+Fragment observes `Effect.ConfirmDelete` → shows `MaterialAlertDialog`:
+- **Confirm** → `onEvent(DeleteConfirmed(id))` → ViewModel calls `DeleteFavouriteUseCase` in coroutine → Flow emits updated list → adapter diffs async
+- **Cancel / dismiss** → no action needed; item is already restored visually
 
-**Detail bottom sheet** (`FavouriteDetailBottomSheet`): BottomSheetDialogFragment receiving a `Favourite` as an argument (parcelize or pass via ViewModel). Shows source text, translated text, language pair label, and three buttons: Copy, Share, Speak — each delegates back to the parent Fragment via a listener interface or shared ViewModel event.
+**Detail bottom sheet** — see Section 3.4 below.
 
-### 3.4 Item Layout
+### 3.4 FavouriteDetailBottomSheet
+
+File: `feature/favourite/FavouriteDetailBottomSheet.kt`
+Layout: `bottom_sheet_favourite_detail.xml`
+
+Receives a `Favourite` via `Bundle` arguments (the `Favourite` model implements `Parcelable` via `@Parcelize`).
+
+**Layout (vertical `LinearLayout`):**
+- `tvLangPair` — e.g. "EN → UR" in subtitle style
+- `tvSourceText` — original text (large)
+- `MaterialDivider`
+- `tvTranslatedText` — translated text (large)
+- Row of three `MaterialButton`s: **Copy** | **Share** | **Speak**
+
+**Behavior:**
+- **Copy** taps → copies `sourceText + " → " + translatedText` to clipboard, shows toast "Copied", dismisses sheet
+- **Share** taps → `Intent(ACTION_SEND)` with combined text, dismisses sheet
+- **Speak** taps → calls `ttsManager.speak(translatedText, targetLang)` (TtsManager injected via `by inject()`)
+- All three actions are handled locally inside the BottomSheet — no callback to parent needed
+- `TtsManager` injected via `by inject()` (Koin)
+
+### 3.6 Item Layout
 
 `item_favourite.xml` — `MaterialCardView` root:
 - `tvSourceText`, `tvTranslatedText`, `tvLangPair` (e.g., "EN → UR")
@@ -319,6 +357,8 @@ object SettingsContract {
 5. **Version `TextView`** centered: `"v${state.appVersion}"`
 
 Fragment observes state and sets switch values programmatically (with listener temporarily removed to avoid feedback loop).
+
+**Floating Overlay permission:** When `SetFloatingOverlay(true)` is dispatched and `Settings.canDrawOverlays(context)` returns `false`, the Fragment intercepts the effect and launches `Settings.ACTION_MANAGE_OVERLAY_PERMISSION` intent instead of starting the service. The `floatingOverlay` preference is only written to `true` after the user grants the permission (handled in `onActivityResult` / `ActivityResultLauncher`). `FloatingOverlayService` already exists in the codebase — this plan wires the toggle to start/stop it via `startForegroundService` / `stopService`.
 
 ---
 
@@ -472,7 +512,10 @@ get<BillingManager>().connect()
 | Modify | `DatabaseModule.kt` — add migration |
 | Modify | `UseCaseModule.kt` — 3 new use cases |
 | Modify | `ViewModelModule.kt` — 3 new ViewModels |
-| Modify | `WordDetailFragment.kt` — fix runBlocking |
+| Modify | `WordDetailFragment.kt` — fix runBlocking, add favourite button |
+| Modify | `WordDetailContract.kt` — add ToggleFavourite event, ShowFavourited effect |
+| Modify | `WordDetailViewModel.kt` — handle ToggleFavourite via AddDictionaryFavouriteUseCase |
+| Modify | `Favourite.kt` — add @Parcelize (implement Parcelable for BottomSheet args) |
 | Modify | `ZubanApp.kt` — connect BillingManager |
 | Create | `data/local/db/migration/Migrations.kt` |
 | Create | `billing/BillingManager.kt` |
