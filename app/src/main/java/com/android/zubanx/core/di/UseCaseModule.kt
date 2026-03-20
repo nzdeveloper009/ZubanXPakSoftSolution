@@ -11,6 +11,7 @@ import com.android.zubanx.domain.usecase.translate.DeleteTranslationUseCase
 import com.android.zubanx.domain.usecase.translate.GetTranslationHistoryUseCase
 import com.android.zubanx.domain.usecase.conversation.ConversationTranslateUseCase
 import com.android.zubanx.domain.usecase.translate.TranslateUseCase
+import com.android.zubanx.domain.usecase.phrases.TranslatePhraseUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -26,4 +27,5 @@ val useCaseModule = module {
     factoryOf(::AddDictionaryFavouriteUseCase)
     factoryOf(::DeleteFavouriteUseCase)
     factoryOf(::GetFavouritesByCategoryUseCase)
+    factoryOf(::TranslatePhraseUseCase)
 }

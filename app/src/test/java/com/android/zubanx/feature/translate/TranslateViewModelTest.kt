@@ -4,6 +4,8 @@ import app.cash.turbine.test
 import com.android.zubanx.core.network.NetworkResult
 import com.android.zubanx.data.local.datastore.AppPreferences
 import com.android.zubanx.data.remote.dto.TranslateResponseDto
+import com.android.zubanx.domain.usecase.favourite.DeleteFavouriteUseCase
+import com.android.zubanx.domain.usecase.favourite.GetFavouritesByCategoryUseCase
 import com.android.zubanx.domain.usecase.translate.AddFavouriteFromTranslationUseCase
 import com.android.zubanx.domain.usecase.translate.DeleteTranslationUseCase
 import com.android.zubanx.domain.usecase.translate.GetTranslationHistoryUseCase
@@ -32,6 +34,8 @@ class TranslateViewModelTest {
     private val historyUseCase = mockk<GetTranslationHistoryUseCase>()
     private val deleteUseCase = mockk<DeleteTranslationUseCase>(relaxed = true)
     private val addFavouriteUseCase = mockk<AddFavouriteFromTranslationUseCase>(relaxed = true)
+    private val getFavouritesUseCase = mockk<GetFavouritesByCategoryUseCase>(relaxed = true)
+    private val deleteFavouriteUseCase = mockk<DeleteFavouriteUseCase>(relaxed = true)
     private val appPreferences = mockk<AppPreferences>()
 
     private lateinit var viewModel: TranslateViewModel
@@ -44,7 +48,8 @@ class TranslateViewModelTest {
         every { appPreferences.targetLang } returns flowOf("ur")
         every { historyUseCase() } returns flowOf(emptyList())
         viewModel = TranslateViewModel(
-            translateUseCase, historyUseCase, deleteUseCase, addFavouriteUseCase, appPreferences
+            translateUseCase, historyUseCase, deleteUseCase, addFavouriteUseCase,
+            getFavouritesUseCase, deleteFavouriteUseCase, appPreferences
         )
     }
 
@@ -80,14 +85,11 @@ class TranslateViewModelTest {
     }
 
     @Test
-    fun `MicResult sets input and triggers translate`() = runTest {
-        coEvery { translateUseCase("Spoken text", any(), any(), any()) } returns NetworkResult.Success(
-            TranslateResponseDto(translatedText = "بولا گیا متن", sourceLang = "en", targetLang = "ur")
-        )
+    fun `MicResult sets input text without triggering translation`() = runTest {
         viewModel.onEvent(TranslateContract.Event.MicResult("Spoken text"))
         dispatcher.scheduler.advanceUntilIdle()
-        val state = viewModel.state.value
-        assertTrue(state is TranslateContract.State.Success)
+        // MicResult only sets the input — state remains Idle until TranslateClicked
+        assertTrue(viewModel.state.value is TranslateContract.State.Idle)
     }
 
     @Test

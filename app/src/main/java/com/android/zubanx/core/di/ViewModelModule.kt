@@ -9,7 +9,10 @@ import com.android.zubanx.feature.settings.SettingsViewModel
 import com.android.zubanx.feature.splash.SplashViewModel
 import com.android.zubanx.feature.conversation.ConversationViewModel
 import com.android.zubanx.feature.translate.TranslateViewModel
+import com.android.zubanx.feature.phrases.PhrasesViewModel
+import com.android.zubanx.feature.phrases.PhrasesCategoryViewModel
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
@@ -22,4 +25,6 @@ val viewModelModule = module {
     viewModelOf(::FavouriteViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::PremiumViewModel)
+    viewModelOf(::PhrasesViewModel)
+    viewModel { params -> PhrasesCategoryViewModel(get(), params.get()) }
 }

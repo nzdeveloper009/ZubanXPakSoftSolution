@@ -81,6 +81,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         private val BOTTOM_NAV_HIDDEN_DESTINATIONS = setOf<Int>(
             R.id.splashFragment,
             R.id.onboardingFragment,
+            R.id.settingsFragment,
+            R.id.phrasesCategoryFragment,
+            R.id.phrasesZoomFragment,
             // R.id.premiumFragment,
             // R.id.wordDetailFragment,
         )
