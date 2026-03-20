@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <!-- Original text (what was spoken) -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardOriginal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:maxWidth="240dp">
+
+        <TextView
+            android:id="@+id/tvOriginal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Translation -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardTranslated"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="240dp">
+
+        <TextView
+            android:id="@+id/tvTranslated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textAppearance="?attr/textAppearanceBodySmall" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

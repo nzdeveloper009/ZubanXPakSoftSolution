@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_conversation"
-    android:label="Conversation">
-    <!-- Fragments added in Plan 5: Translate & Conversation -->
+    android:label="Conversation"
+    app:startDestination="@id/conversationFragment">
+
+    <fragment
+        android:id="@+id/conversationFragment"
+        android:name="com.android.zubanx.feature.conversation.ConversationFragment"
+        android:label="Conversation" />
+
 </navigation>
