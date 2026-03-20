@@ -1,6 +1,9 @@
 package com.android.zubanx.app
 
 import android.os.Bundle
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -13,9 +16,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     private lateinit var navController: NavController
 
+    private var isBottomNavAllowedByDestination = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupNavigation()
+        setupInsets()
     }
 
     private fun setupNavigation() {
@@ -26,7 +32,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         binding.bottomNav.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.bottomNav.isVisible = destination.id !in BOTTOM_NAV_HIDDEN_DESTINATIONS
+            isBottomNavAllowedByDestination = destination.id !in BOTTOM_NAV_HIDDEN_DESTINATIONS
+            binding.bottomNav.isVisible = isBottomNavAllowedByDestination
+        }
+    }
+
+    private fun setupInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+
+            // Push fragment content below the status bar
+            binding.navHostFragment.updatePadding(top = systemBars.top)
+
+            // Keep bottom nav above the system navigation bar; hide when keyboard is up
+            binding.bottomNav.updatePadding(bottom = systemBars.bottom)
+            binding.bottomNav.isVisible = isBottomNavAllowedByDestination && !imeVisible
+
+            insets
         }
     }
 
