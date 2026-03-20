@@ -23,7 +23,7 @@ class WordDetailViewModel(
                 setState { WordDetailContract.State.Loaded(entry = event.entry) }
                 viewModelScope.launch {
                     val isFav = repository.isFavourite(event.entry.word)
-                    setState { (state.value as? WordDetailContract.State.Loaded)?.copy(isFavourite = isFav) ?: this }
+                    setState { (this as? WordDetailContract.State.Loaded)?.copy(isFavourite = isFav) ?: this }
                 }
             }
             is WordDetailContract.Event.EnrichWithAi -> enrichWithAi(event.expert)
@@ -36,37 +36,32 @@ class WordDetailViewModel(
     private fun toggleFavourite() {
         val loaded = state.value as? WordDetailContract.State.Loaded ?: return
         viewModelScope.launch {
-            val isFav = repository.isFavourite(loaded.entry.word)
-            if (!isFav) {
+            if (!loaded.isFavourite) {
                 addDictionaryFavouriteUseCase(
                     word = loaded.entry.word,
                     definition = loaded.entry.definition,
                     language = loaded.entry.language
                 )
-                setState { (state.value as? WordDetailContract.State.Loaded)?.copy(isFavourite = true) ?: this }
+                setState { (this as? WordDetailContract.State.Loaded)?.copy(isFavourite = true) ?: this }
                 sendEffect(WordDetailContract.Effect.ShowFavourited)
             } else {
-                setState { (state.value as? WordDetailContract.State.Loaded)?.copy(isFavourite = false) ?: this }
+                // WordDetail doesn't have the favourite's DB id — deletion is handled
+                // via swipe-to-delete in FavouriteFragment. Just update UI state here.
+                setState { (this as? WordDetailContract.State.Loaded)?.copy(isFavourite = false) ?: this }
             }
         }
     }
 
     private fun enrichWithAi(expert: String) {
         val loaded = state.value as? WordDetailContract.State.Loaded ?: return
-        setState { (loaded as WordDetailContract.State.Loaded).copy(aiLoading = true) }
+        setState { (this as? WordDetailContract.State.Loaded)?.copy(aiLoading = true) ?: this }
         viewModelScope.launch {
-            val entry = (state.value as? WordDetailContract.State.Loaded)?.entry ?: return@launch
-            when (val result = enrichWithAiUseCase(entry.word, entry.language, expert)) {
+            when (val result = enrichWithAiUseCase(loaded.entry.word, loaded.entry.language, expert)) {
                 is NetworkResult.Success -> setState {
-                    (state.value as? WordDetailContract.State.Loaded)?.copy(
-                        aiInsight = result.data,
-                        aiLoading = false
-                    ) ?: this
+                    (this as? WordDetailContract.State.Loaded)?.copy(aiInsight = result.data, aiLoading = false) ?: this
                 }
                 is NetworkResult.Error -> {
-                    setState {
-                        (state.value as? WordDetailContract.State.Loaded)?.copy(aiLoading = false) ?: this
-                    }
+                    setState { (this as? WordDetailContract.State.Loaded)?.copy(aiLoading = false) ?: this }
                     sendEffect(WordDetailContract.Effect.ShowToast(result.message))
                 }
             }
