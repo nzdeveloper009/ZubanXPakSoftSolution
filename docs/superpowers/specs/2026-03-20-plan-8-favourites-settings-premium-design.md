@@ -45,7 +45,7 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
 
 Add field: `val category: String = "translate"`
 
-**Category constants** (companion object in `FavouriteEntity` or a top-level object):
+**Category constants** — defined as a top-level object in `FavouriteEntity.kt` (same file, not a separate file):
 ```kotlin
 object FavouriteCategory {
     const val TRANSLATE = "translate"
@@ -70,9 +70,13 @@ Add field: `val category: String = FavouriteCategory.TRANSLATE`
 Add to interface:
 ```kotlin
 fun getByCategory(category: String): Flow<List<Favourite>>
+suspend fun isFavourite(sourceText: String): Boolean  // used by WordDetailFragment toggle icon
 ```
 
 `FavouriteRepositoryImpl` maps `dao.getAllByCategory(category)` via `FavouriteMapper.toDomain()`.
+`isFavourite` delegates to `dao.existsBySourceText(sourceText)` — this DAO method already exists.
+
+`FavouriteMapper.toDomain()` maps `category` as a plain passthrough: `category = entity.category`. `toEntity()` maps `category = domain.category`. Both use `FavouriteCategory` constants only as default values — no switch logic needed.
 
 ### 1.6 New Domain Use Cases (`domain/usecase/favourite/`)
 
@@ -541,7 +545,7 @@ get<BillingManager>().connect()
 | Create | `feature/premium/PremiumViewModel.kt` |
 | Create | `feature/premium/PremiumFragment.kt` |
 | Create | Layouts: `fragment_favourite.xml`, `item_favourite.xml`, `fragment_settings.xml`, `fragment_premium.xml`, `bottom_sheet_favourite_detail.xml` |
-| Modify | `nav_favourite.xml`, `nav_settings.xml`, `nav_premium.xml` |
+| Modify | `nav_favourite.xml`, `nav_settings.xml`, `nav_premium.xml` — these files already exist as empty shells; Plan 8 fills in `startDestination` and `<fragment>` elements |
 
 ---
 
