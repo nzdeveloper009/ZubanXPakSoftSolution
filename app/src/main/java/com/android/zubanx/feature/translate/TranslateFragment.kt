@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -58,8 +57,12 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        ttsManager.stop()
+    }
+
     override fun setupViews() {
-        (activity as? AppCompatActivity)?.setSupportActionBar(binding.toolbar)
         binding.toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_settings -> {
@@ -112,7 +115,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
     override fun observeState() {
         collectFlow(viewModel.state) { state ->
             when (state) {
-                is TranslateContract.State.Idle -> renderIdle()
+                is TranslateContract.State.Idle -> renderIdle(state)
                 is TranslateContract.State.Translating -> renderTranslating()
                 is TranslateContract.State.Success -> renderSuccess(state)
                 is TranslateContract.State.Error -> renderError(state)
@@ -129,17 +132,21 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
                     binding.etSourceText.setText(effect.text)
                     binding.etSourceText.setSelection(effect.text.length)
                 }
+                is TranslateContract.Effect.UpdateLanguages -> {
+                    binding.btnSourceLang.text = effect.sourceLang.name
+                    binding.btnTargetLang.text = effect.targetLang.name
+                }
             }
         }
     }
 
-    private fun renderIdle() {
+    private fun renderIdle(state: TranslateContract.State.Idle) {
         binding.outputCard.isVisible = false
         binding.tvError.isVisible = false
         binding.progressTranslate.isVisible = false
         binding.chipExpert.isVisible = false
-        binding.tvHistoryLabel.isVisible = false
-        binding.rvHistory.isVisible = false
+        historyAdapter.favouritedKeys = state.favouritedKeys
+        updateHistory(state.history)
     }
 
     private fun renderTranslating() {

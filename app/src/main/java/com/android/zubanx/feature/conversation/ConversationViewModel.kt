@@ -46,10 +46,12 @@ class ConversationViewModel(
             is ConversationContract.Event.LangASelected -> {
                 val current = activeState ?: return
                 setState { current.copy(langA = event.lang) }
+                viewModelScope.launch { appPreferences.setSourceLang(event.lang.code) }
             }
             is ConversationContract.Event.LangBSelected -> {
                 val current = activeState ?: return
                 setState { current.copy(langB = event.lang) }
+                viewModelScope.launch { appPreferences.setTargetLang(event.lang.code) }
             }
             is ConversationContract.Event.ClearConversation -> {
                 val current = activeState ?: return

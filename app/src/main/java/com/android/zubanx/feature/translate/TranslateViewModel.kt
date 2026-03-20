@@ -25,7 +25,7 @@ class TranslateViewModel(
     private val deleteFavouriteUseCase: DeleteFavouriteUseCase,
     private val appPreferences: AppPreferences
 ) : BaseViewModel<TranslateContract.State, TranslateContract.Event, TranslateContract.Effect>(
-    TranslateContract.State.Idle
+    TranslateContract.State.Idle()
 ) {
 
     private val inputText = MutableStateFlow("")
@@ -50,10 +50,11 @@ class TranslateViewModel(
             historyUseCase().collect { list ->
                 historyList = list
                 val current = state.value
-                if (current is TranslateContract.State.Success) {
-                    setState { current.copy(history = list) }
-                } else if (current is TranslateContract.State.Error) {
-                    setState { current.copy(history = list) }
+                when (current) {
+                    is TranslateContract.State.Idle -> setState { current.copy(history = list) }
+                    is TranslateContract.State.Success -> setState { current.copy(history = list) }
+                    is TranslateContract.State.Error -> setState { current.copy(history = list) }
+                    else -> {}
                 }
             }
         }
@@ -64,10 +65,11 @@ class TranslateViewModel(
                 }
                 val keys = favouriteKeyToId.keys
                 val current = state.value
-                if (current is TranslateContract.State.Success) {
-                    setState { current.copy(favouritedKeys = keys) }
-                } else if (current is TranslateContract.State.Error) {
-                    setState { current.copy(favouritedKeys = keys) }
+                when (current) {
+                    is TranslateContract.State.Idle -> setState { current.copy(favouritedKeys = keys) }
+                    is TranslateContract.State.Success -> setState { current.copy(favouritedKeys = keys) }
+                    is TranslateContract.State.Error -> setState { current.copy(favouritedKeys = keys) }
+                    else -> {}
                 }
             }
         }
@@ -84,12 +86,18 @@ class TranslateViewModel(
                 inputText.value = event.text
                 sendEffect(TranslateContract.Effect.SetInputText(event.text))
             }
-            is TranslateContract.Event.SourceLangSelected -> currentSourceLang = event.language
-            is TranslateContract.Event.TargetLangSelected -> currentTargetLang = event.language
+            is TranslateContract.Event.SourceLangSelected -> {
+                currentSourceLang = event.language
+                viewModelScope.launch { appPreferences.setSourceLang(event.language.code) }
+            }
+            is TranslateContract.Event.TargetLangSelected -> {
+                currentTargetLang = event.language
+                viewModelScope.launch { appPreferences.setTargetLang(event.language.code) }
+            }
             is TranslateContract.Event.SwapLanguages -> swapLanguages()
             is TranslateContract.Event.ClearInput -> {
                 inputText.value = ""
-                setState { TranslateContract.State.Idle }
+                setState { TranslateContract.State.Idle(history = historyList, favouritedKeys = favouriteKeyToId.keys) }
             }
             is TranslateContract.Event.CopyTranslation -> copyTranslation()
             is TranslateContract.Event.SpeakTranslation -> speakTranslation()
@@ -159,8 +167,15 @@ class TranslateViewModel(
         val temp = currentSourceLang
         currentSourceLang = currentTargetLang
         currentTargetLang = temp
-        val text = inputText.value
-        if (text.isNotBlank()) translate(text)
+        sendEffect(TranslateContract.Effect.UpdateLanguages(currentSourceLang, currentTargetLang))
+        viewModelScope.launch {
+            appPreferences.setSourceLang(currentSourceLang.code)
+            appPreferences.setTargetLang(currentTargetLang.code)
+        }
+        val current = state.value
+        if (current is TranslateContract.State.Success) {
+            setState { current.copy(sourceLang = currentSourceLang, targetLang = currentTargetLang) }
+        }
     }
 
     private fun copyTranslation() {

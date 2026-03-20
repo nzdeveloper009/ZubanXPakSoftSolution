@@ -26,5 +26,5 @@ val viewModelModule = module {
     viewModelOf(::SettingsViewModel)
     viewModelOf(::PremiumViewModel)
     viewModelOf(::PhrasesViewModel)
-    viewModel { params -> PhrasesCategoryViewModel(get(), params.get()) }
+    viewModel { params -> PhrasesCategoryViewModel(get(), get(), params.get()) }
 }

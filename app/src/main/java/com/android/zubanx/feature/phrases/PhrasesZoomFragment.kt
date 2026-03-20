@@ -1,6 +1,5 @@
 package com.android.zubanx.feature.phrases
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.android.zubanx.core.base.BaseFragment
@@ -15,9 +14,13 @@ class PhrasesZoomFragment : BaseFragment<FragmentPhrasesZoomBinding>(
     private val args: PhrasesZoomFragmentArgs by navArgs()
     private val ttsManager: TtsManager by inject()
 
+    override fun onPause() {
+        super.onPause()
+        ttsManager.stop()
+    }
+
     override fun setupViews() {
-        (activity as? AppCompatActivity)?.setSupportActionBar(binding.toolbar)
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material)
         binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
         binding.tvZoomText.text = args.translatedText

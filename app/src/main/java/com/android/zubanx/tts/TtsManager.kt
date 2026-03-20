@@ -27,8 +27,17 @@ class TtsManager(context: Context) {
     /** Current TTS state. Observe via `StateFlow.collect`. */
     val state: StateFlow<TtsState> = _state.asStateFlow()
 
+    @Volatile private var isInitialized = false
+    private var pendingSpeak: Pair<String, String>? = null
+
     private val tts: TextToSpeech = TextToSpeech(context) { status ->
-        if (status == TextToSpeech.ERROR) {
+        if (status == TextToSpeech.SUCCESS) {
+            isInitialized = true
+            pendingSpeak?.let { (text, lang) ->
+                pendingSpeak = null
+                speak(text, lang)
+            }
+        } else {
             Timber.e("TtsManager: TextToSpeech initialisation failed (status=$status)")
             _state.value = TtsState.Error("TTS initialisation failed")
         }
@@ -55,8 +64,13 @@ class TtsManager(context: Context) {
      *
      * Sets state to [TtsState.Speaking] immediately and returns to [TtsState.Idle] when done.
      * If the engine is already speaking, the current utterance is interrupted.
+     * If TTS is not yet initialised, the request is queued and replayed once ready.
      */
     fun speak(text: String, languageTag: String = "en") {
+        if (!isInitialized) {
+            pendingSpeak = text to languageTag
+            return
+        }
         tts.language = Locale.forLanguageTag(languageTag)
         _state.value = TtsState.Speaking(text)
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, UUID.randomUUID().toString())

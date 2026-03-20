@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,9 +40,13 @@ class PhrasesCategoryFragment : BaseFragment<FragmentPhrasesCategoryBinding>(
         onRetry = { index -> viewModel.onEvent(PhrasesCategoryContract.Event.RetryTranslation(index)) }
     )
 
+    override fun onPause() {
+        super.onPause()
+        ttsManager.stop()
+    }
+
     override fun setupViews() {
-        (activity as? AppCompatActivity)?.setSupportActionBar(binding.toolbar)
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material)
         binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
         binding.rvPhrases.layoutManager = LinearLayoutManager(requireContext())

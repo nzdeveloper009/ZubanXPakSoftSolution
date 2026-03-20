@@ -8,7 +8,10 @@ import com.android.zubanx.domain.model.Translation
 object TranslateContract {
 
     sealed interface State : UiState {
-        data object Idle : State
+        data class Idle(
+            val history: List<Translation> = emptyList(),
+            val favouritedKeys: Set<String> = emptySet()
+        ) : State
         data object Translating : State
         data class Success(
             val inputText: String,
@@ -54,5 +57,6 @@ object TranslateContract {
         data class ShareText(val text: String) : Effect()
         data class LaunchMic(val sourceCode: String?) : Effect()
         data class SetInputText(val text: String) : Effect()
+        data class UpdateLanguages(val sourceLang: LanguageItem, val targetLang: LanguageItem) : Effect()
     }
 }

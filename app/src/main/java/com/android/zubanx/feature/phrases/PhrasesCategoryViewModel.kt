@@ -3,13 +3,16 @@ package com.android.zubanx.feature.phrases
 import androidx.lifecycle.viewModelScope
 import com.android.zubanx.core.mvi.BaseViewModel
 import com.android.zubanx.core.network.NetworkResult
+import com.android.zubanx.data.local.datastore.AppPreferences
 import com.android.zubanx.domain.usecase.phrases.TranslatePhraseUseCase
 import com.android.zubanx.feature.phrases.data.PhrasesData
 import com.android.zubanx.feature.translate.LanguageItem
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class PhrasesCategoryViewModel(
     private val translateUseCase: TranslatePhraseUseCase,
+    private val appPreferences: AppPreferences,
     categoryId: String
 ) : BaseViewModel<PhrasesCategoryContract.State, PhrasesCategoryContract.Event, PhrasesCategoryContract.Effect>(
     run {
@@ -20,6 +23,18 @@ class PhrasesCategoryViewModel(
         )
     }
 ) {
+
+    init {
+        viewModelScope.launch {
+            val sourceLangCode = appPreferences.sourceLang.first()
+            val targetLangCode = appPreferences.targetLang.first()
+            val sourceLang = if (sourceLangCode == "auto") LanguageItem.fromCode("en")
+                             else LanguageItem.fromCode(sourceLangCode)
+            val targetLang = LanguageItem.fromCode(targetLangCode)
+            val current = activeState ?: return@launch
+            setState { current.copy(langSource = sourceLang, langTarget = targetLang) }
+        }
+    }
 
     override fun onEvent(event: PhrasesCategoryContract.Event) {
         when (event) {
@@ -67,6 +82,7 @@ class PhrasesCategoryViewModel(
                 expandedIndex = null
             )
         }
+        viewModelScope.launch { appPreferences.setSourceLang(lang.code) }
         refreshDisplayPhrases()
     }
 
@@ -77,6 +93,7 @@ class PhrasesCategoryViewModel(
                 expandedIndex = null
             )
         }
+        viewModelScope.launch { appPreferences.setTargetLang(lang.code) }
     }
 
     private fun swapLanguages() {
@@ -87,6 +104,10 @@ class PhrasesCategoryViewModel(
                 langTarget = s.langSource,
                 expandedIndex = null
             )
+        }
+        viewModelScope.launch {
+            appPreferences.setSourceLang(s.langTarget.code)
+            appPreferences.setTargetLang(s.langSource.code)
         }
         refreshDisplayPhrases()
     }
