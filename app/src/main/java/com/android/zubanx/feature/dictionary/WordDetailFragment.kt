@@ -3,7 +3,9 @@ package com.android.zubanx.feature.dictionary
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.android.zubanx.R
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.android.zubanx.core.base.BaseFragment
@@ -43,6 +45,9 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
         binding.btnAiEnrich.setOnClickListener {
             viewModel.onEvent(WordDetailContract.Event.EnrichWithAi("GPT"))
         }
+        binding.btnFavourite.setOnClickListener {
+            viewModel.onEvent(WordDetailContract.Event.ToggleFavourite)
+        }
     }
 
     override fun observeState() {
@@ -60,6 +65,7 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
                     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("definition", effect.text))
                 }
+                is WordDetailContract.Effect.ShowFavourited -> requireContext().toast("Added to favourites")
             }
         }
     }
@@ -90,5 +96,8 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
             binding.tvAiInsight.text = state.aiInsight
             binding.btnAiEnrich.isVisible = false
         }
+
+        val favIcon = if (state.isFavourite) R.drawable.ic_favorite else R.drawable.ic_favorite_border
+        binding.btnFavourite.setImageDrawable(ContextCompat.getDrawable(requireContext(), favIcon))
     }
 }

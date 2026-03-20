@@ -3,6 +3,9 @@ package com.android.zubanx.core.di
 import com.android.zubanx.domain.usecase.dictionary.EnrichWithAiUseCase
 import com.android.zubanx.domain.usecase.dictionary.GetDictionaryHistoryUseCase
 import com.android.zubanx.domain.usecase.dictionary.LookupWordUseCase
+import com.android.zubanx.domain.usecase.favourite.AddDictionaryFavouriteUseCase
+import com.android.zubanx.domain.usecase.favourite.DeleteFavouriteUseCase
+import com.android.zubanx.domain.usecase.favourite.GetFavouritesByCategoryUseCase
 import com.android.zubanx.domain.usecase.translate.AddFavouriteFromTranslationUseCase
 import com.android.zubanx.domain.usecase.translate.DeleteTranslationUseCase
 import com.android.zubanx.domain.usecase.translate.GetTranslationHistoryUseCase
@@ -20,4 +23,7 @@ val useCaseModule = module {
     factoryOf(::GetDictionaryHistoryUseCase)
     factoryOf(::EnrichWithAiUseCase)
     factoryOf(::ConversationTranslateUseCase)
+    factoryOf(::AddDictionaryFavouriteUseCase)
+    factoryOf(::DeleteFavouriteUseCase)
+    factoryOf(::GetFavouritesByCategoryUseCase)
 }

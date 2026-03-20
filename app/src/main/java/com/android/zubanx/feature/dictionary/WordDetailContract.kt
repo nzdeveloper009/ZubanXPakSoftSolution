@@ -11,7 +11,8 @@ object WordDetailContract {
         data class Loaded(
             val entry: DictionaryEntry,
             val aiInsight: String? = null,
-            val aiLoading: Boolean = false
+            val aiLoading: Boolean = false,
+            val isFavourite: Boolean = false
         ) : State
         data class Error(val message: String) : State
     }
