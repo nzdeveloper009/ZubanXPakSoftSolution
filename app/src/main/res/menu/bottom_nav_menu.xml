@@ -3,27 +3,27 @@
 
     <item
         android:id="@+id/nav_translate"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_nav_translate"
         android:title="Translate" />
 
     <item
         android:id="@+id/nav_conversation"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_nav_conversation"
         android:title="Conversation" />
 
     <item
         android:id="@+id/nav_dictionary"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_nav_dictionary"
         android:title="Dictionary" />
 
     <item
         android:id="@+id/nav_favourite"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_nav_favourite"
         android:title="Favourites" />
 
     <item
         android:id="@+id/nav_settings"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_nav_settings"
         android:title="Settings" />
 
 </menu>
