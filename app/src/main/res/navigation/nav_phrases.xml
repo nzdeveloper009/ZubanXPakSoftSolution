@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_phrases"
-    android:label="Phrases">
-    <!-- Fragments added in Plan 6: Dictionary & Content Features -->
+    android:label="Phrases"
+    app:startDestination="@id/phrasesFragment">
+
+    <fragment
+        android:id="@+id/phrasesFragment"
+        android:name="com.android.zubanx.feature.phrases.PhrasesFragment"
+        android:label="Phrases">
+        <action
+            android:id="@+id/action_phrases_to_category"
+            app:destination="@id/phrasesCategoryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/phrasesCategoryFragment"
+        android:name="com.android.zubanx.feature.phrases.PhrasesCategoryFragment"
+        android:label="Category">
+        <argument
+            android:name="categoryId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_category_to_zoom"
+            app:destination="@id/phrasesZoomFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/phrasesZoomFragment"
+        android:name="com.android.zubanx.feature.phrases.PhrasesZoomFragment"
+        android:label="Zoom">
+        <argument
+            android:name="translatedText"
+            app:argType="string" />
+        <argument
+            android:name="langCode"
+            app:argType="string" />
+    </fragment>
+
 </navigation>

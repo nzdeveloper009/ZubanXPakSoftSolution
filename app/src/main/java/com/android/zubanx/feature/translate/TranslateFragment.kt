@@ -12,11 +12,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.android.zubanx.R
 import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
@@ -56,6 +59,21 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
     }
 
     override fun setupViews() {
+        (activity as? AppCompatActivity)?.setSupportActionBar(binding.toolbar)
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_settings -> {
+                    findNavController().navigate(R.id.nav_settings)
+                    true
+                }
+                R.id.action_premium -> {
+                    findNavController().navigate(R.id.nav_premium)
+                    true
+                }
+                else -> false
+            }
+        }
+
         binding.rvHistory.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = historyAdapter
