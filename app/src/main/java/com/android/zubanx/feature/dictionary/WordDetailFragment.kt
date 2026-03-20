@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.navArgs
 import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
@@ -17,14 +18,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordDetailBinding::inflate) {
 
     private val viewModel: WordDetailViewModel by viewModel()
+    private val args: WordDetailFragmentArgs by navArgs()
     private val repository: DictionaryRepository by inject()
 
     override fun setupViews() {
-        val word = arguments?.getString("word") ?: ""
-        val language = arguments?.getString("language") ?: "en"
-
-        val entry = runBlocking { repository.getCached(word, language) }
-            ?: DictionaryEntry(word = word, language = language, definition = "", timestamp = 0L)
+        val entry = runBlocking { repository.getCached(args.word, args.language) }
+            ?: DictionaryEntry(word = args.word, language = args.language, definition = "", timestamp = 0L)
 
         viewModel.onEvent(WordDetailContract.Event.Load(entry))
 

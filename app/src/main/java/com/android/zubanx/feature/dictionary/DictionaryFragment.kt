@@ -19,10 +19,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.core.os.bundleOf
-import androidx.navigation.fragment.findNavController
-import com.android.zubanx.R
 import com.android.zubanx.core.base.BaseFragment
+import com.android.zubanx.core.navigation.safeNavigate
 import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
 import com.android.zubanx.databinding.FragmentDictionaryBinding
@@ -104,15 +102,11 @@ class DictionaryFragment : BaseFragment<FragmentDictionaryBinding>(FragmentDicti
             when (effect) {
                 is DictionaryContract.Effect.ShowToast -> requireContext().toast(effect.message)
                 is DictionaryContract.Effect.OpenWordDetail -> {
-                    val bundle = bundleOf(
-                        "word" to effect.entry.word,
-                        "language" to effect.entry.language
+                    val action = DictionaryFragmentDirections.actionDictionaryToWordDetail(
+                        word = effect.entry.word,
+                        language = effect.entry.language
                     )
-                    val navController = findNavController()
-                    val action = navController.currentDestination?.getAction(R.id.action_dictionary_to_wordDetail)
-                    if (action != null) {
-                        navController.navigate(R.id.action_dictionary_to_wordDetail, bundle)
-                    }
+                    safeNavigate(action)
                 }
                 is DictionaryContract.Effect.LaunchMic -> launchMic()
             }

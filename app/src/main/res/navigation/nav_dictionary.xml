@@ -25,6 +25,15 @@
         android:id="@+id/wordDetailFragment"
         android:name="com.android.zubanx.feature.dictionary.WordDetailFragment"
         android:label="Word Detail"
-        tools:layout="@layout/fragment_word_detail" />
+        tools:layout="@layout/fragment_word_detail">
+
+        <argument
+            android:name="word"
+            app:argType="string" />
+        <argument
+            android:name="language"
+            app:argType="string"
+            android:defaultValue="en" />
+    </fragment>
 
 </navigation>
