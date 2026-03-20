@@ -4,17 +4,32 @@ package com.android.zubanx.feature.conversation
 import androidx.lifecycle.viewModelScope
 import com.android.zubanx.core.mvi.BaseViewModel
 import com.android.zubanx.core.network.NetworkResult
+import com.android.zubanx.data.local.datastore.AppPreferences
 import com.android.zubanx.domain.usecase.conversation.ConversationTranslateUseCase
 import com.android.zubanx.feature.translate.LanguageItem
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class ConversationViewModel(
-    private val translateUseCase: ConversationTranslateUseCase
+    private val translateUseCase: ConversationTranslateUseCase,
+    private val appPreferences: AppPreferences
 ) : BaseViewModel<ConversationContract.State, ConversationContract.Event, ConversationContract.Effect>(
     ConversationContract.State.Active()
 ) {
 
     private var nextId = 0L
+
+    init {
+        viewModelScope.launch {
+            val sourceLangCode = appPreferences.sourceLang.first()
+            val targetLangCode = appPreferences.targetLang.first()
+            val langA = if (sourceLangCode == "auto") LanguageItem.fromCode("en")
+                        else LanguageItem.fromCode(sourceLangCode)
+            val langB = LanguageItem.fromCode(targetLangCode)
+            val current = activeState ?: return@launch
+            setState { current.copy(langA = langA, langB = langB) }
+        }
+    }
 
     override fun onEvent(event: ConversationContract.Event) {
         when (event) {

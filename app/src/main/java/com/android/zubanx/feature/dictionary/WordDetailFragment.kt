@@ -8,6 +8,8 @@ import androidx.navigation.fragment.navArgs
 import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
+import com.android.zubanx.tts.TtsManager
+import org.koin.android.ext.android.inject
 import com.android.zubanx.databinding.FragmentWordDetailBinding
 import com.android.zubanx.domain.model.DictionaryEntry
 import com.android.zubanx.domain.repository.DictionaryRepository
@@ -20,6 +22,7 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
     private val viewModel: WordDetailViewModel by viewModel()
     private val args: WordDetailFragmentArgs by navArgs()
     private val repository: DictionaryRepository by inject()
+    private val ttsManager: TtsManager by inject()
 
     override fun setupViews() {
         val entry = runBlocking { repository.getCached(args.word, args.language) }
@@ -48,7 +51,7 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
         collectFlow(viewModel.effect) { effect ->
             when (effect) {
                 is WordDetailContract.Effect.ShowToast -> requireContext().toast(effect.message)
-                is WordDetailContract.Effect.SpeakText -> requireContext().toast("Speaking: ${effect.text}")
+                is WordDetailContract.Effect.SpeakText -> ttsManager.speak(effect.text, args.language)
                 is WordDetailContract.Effect.CopyToClipboard -> {
                     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("definition", effect.text))

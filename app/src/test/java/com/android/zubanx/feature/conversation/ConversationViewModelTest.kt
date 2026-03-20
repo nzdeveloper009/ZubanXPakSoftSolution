@@ -2,13 +2,16 @@
 package com.android.zubanx.feature.conversation
 
 import com.android.zubanx.core.network.NetworkResult
+import com.android.zubanx.data.local.datastore.AppPreferences
 import com.android.zubanx.data.remote.dto.TranslateResponseDto
 import com.android.zubanx.domain.usecase.conversation.ConversationTranslateUseCase
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -24,13 +27,17 @@ import org.junit.Test
 class ConversationViewModelTest {
 
     private val translateUseCase: ConversationTranslateUseCase = mockk()
+    private val appPreferences: AppPreferences = mockk {
+        every { sourceLang } returns flowOf("en")
+        every { targetLang } returns flowOf("ur")
+    }
     private lateinit var viewModel: ConversationViewModel
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = ConversationViewModel(translateUseCase)
+        viewModel = ConversationViewModel(translateUseCase, appPreferences)
     }
 
     @After

@@ -23,6 +23,8 @@ import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.navigation.safeNavigate
 import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
+import com.android.zubanx.tts.TtsManager
+import org.koin.android.ext.android.inject
 import com.android.zubanx.databinding.FragmentDictionaryBinding
 import com.android.zubanx.databinding.ItemDictionaryHistoryBinding
 import com.android.zubanx.domain.model.DictionaryEntry
@@ -31,6 +33,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class DictionaryFragment : BaseFragment<FragmentDictionaryBinding>(FragmentDictionaryBinding::inflate) {
 
     private val viewModel: DictionaryViewModel by viewModel()
+    private val ttsManager: TtsManager by inject()
 
     private val historyAdapter = HistoryAdapter(
         onItemClick = { viewModel.onEvent(DictionaryContract.Event.HistoryItemClicked(it)) },
@@ -75,7 +78,8 @@ class DictionaryFragment : BaseFragment<FragmentDictionaryBinding>(FragmentDicti
         binding.btnMic.setOnClickListener { launchMic() }
         binding.btnSpeak.setOnClickListener {
             val word = binding.tvWord.text?.toString() ?: return@setOnClickListener
-            requireContext().toast("Speaking: $word")
+            val lang = (viewModel.state.value as? DictionaryContract.State.Success)?.entry?.language ?: "en"
+            ttsManager.speak(word, lang)
         }
         binding.btnCopy.setOnClickListener {
             val def = binding.tvDefinition.text?.toString() ?: return@setOnClickListener
@@ -92,7 +96,7 @@ class DictionaryFragment : BaseFragment<FragmentDictionaryBinding>(FragmentDicti
     override fun observeState() {
         collectFlow(viewModel.state) { state ->
             when (state) {
-                is DictionaryContract.State.Idle -> renderIdle()
+                is DictionaryContract.State.Idle -> renderIdle(state)
                 is DictionaryContract.State.Searching -> renderSearching()
                 is DictionaryContract.State.Success -> renderSuccess(state)
                 is DictionaryContract.State.Error -> renderError(state)
@@ -113,12 +117,11 @@ class DictionaryFragment : BaseFragment<FragmentDictionaryBinding>(FragmentDicti
         }
     }
 
-    private fun renderIdle() {
+    private fun renderIdle(state: DictionaryContract.State.Idle) {
         binding.resultCard.isVisible = false
         binding.progressSearch.isVisible = false
         binding.tvError.isVisible = false
-        binding.tvHistoryLabel.isVisible = false
-        binding.rvHistory.isVisible = false
+        updateHistory(state.history)
     }
 
     private fun renderSearching() {
