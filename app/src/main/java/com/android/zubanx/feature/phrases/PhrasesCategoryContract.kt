@@ -36,6 +36,5 @@ object PhrasesCategoryContract {
         data class SpeakText(val text: String, val langCode: String) : Effect()
         data class CopyToClipboard(val text: String) : Effect()
         data class ShowToast(val message: String) : Effect()
-        data class NavigateToZoom(val translatedText: String, val langCode: String) : Effect()
     }
 }

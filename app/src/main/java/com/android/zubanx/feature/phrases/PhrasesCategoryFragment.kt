@@ -86,10 +86,6 @@ class PhrasesCategoryFragment : BaseFragment<FragmentPhrasesCategoryBinding>(
                 }
                 is PhrasesCategoryContract.Effect.ShowToast ->
                     requireContext().toast(effect.message)
-                is PhrasesCategoryContract.Effect.NavigateToZoom ->
-                    findNavController().navigate(
-                        PhrasesCategoryFragmentDirections.actionCategoryToZoom(effect.translatedText, effect.langCode)
-                    )
             }
         }
     }

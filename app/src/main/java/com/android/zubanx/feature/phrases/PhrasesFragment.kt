@@ -62,7 +62,7 @@ class PhrasesFragment : BaseFragment<FragmentPhrasesBinding>(FragmentPhrasesBind
         companion object {
             val DIFF = object : DiffUtil.ItemCallback<PhraseCategory>() {
                 override fun areItemsTheSame(a: PhraseCategory, b: PhraseCategory) = a.id == b.id
-                override fun areContentsTheSame(a: PhraseCategory, b: PhraseCategory) = a.id == b.id
+                override fun areContentsTheSame(a: PhraseCategory, b: PhraseCategory) = a == b
             }
         }
     }

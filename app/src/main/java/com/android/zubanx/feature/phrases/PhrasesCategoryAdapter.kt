@@ -49,11 +49,15 @@ class PhrasesCategoryAdapter(
         holder.b.layoutError.isVisible = item.isExpanded && item.isError
         holder.b.layoutActions.isVisible = item.isExpanded && !item.isLoading && !item.isError && item.translatedText != null
 
-        item.translatedText?.let { translated ->
-            holder.b.tvTranslated.text = translated
+        if (item.translatedText != null) {
+            holder.b.tvTranslated.text = item.translatedText
             holder.b.btnSpeak.setOnClickListener { onSpeak(item.index) }
             holder.b.btnCopy.setOnClickListener { onCopy(item.index) }
-            holder.b.btnZoom.setOnClickListener { onZoom(translated, targetLangCode) }
+            holder.b.btnZoom.setOnClickListener { onZoom(item.translatedText, targetLangCode) }
+        } else {
+            holder.b.btnSpeak.setOnClickListener(null)
+            holder.b.btnCopy.setOnClickListener(null)
+            holder.b.btnZoom.setOnClickListener(null)
         }
         holder.b.btnRetry.setOnClickListener { onRetry(item.index) }
     }
