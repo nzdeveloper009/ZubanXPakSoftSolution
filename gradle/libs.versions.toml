@@ -1,33 +1,33 @@
 [versions]
 agp = "9.1.0"
-kotlin = "2.1.20"
-ksp = "2.1.20-1.0.31"
-coreKtx = "1.17.0"
+kotlin = "2.3.20"
+ksp = "2.3.4"
+coreKtx = "1.18.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 appcompat = "1.7.1"
 material = "1.13.0"
-activity = "1.12.4"
+activity = "1.13.0"
 constraintlayout = "2.2.1"
-navigation = "2.9.0"
-lifecycle = "2.9.0"
-coroutines = "1.10.1"
-room = "2.7.0-alpha13"
-koinBom = "4.1.1"
-ktor = "3.1.2"
-datastore = "1.1.4"
-firebaseBom = "33.12.0"
-googleServices = "4.4.2"
+navigation = "2.9.7"
+lifecycle = "2.10.0"
+coroutines = "1.10.2"
+room = "2.8.4"
+koinBom = "4.2.0"
+ktor = "3.4.1"
+datastore = "1.2.1"
+firebaseBom = "34.10.0"
+googleServices = "4.4.4"
 mlkitOcr = "16.0.1"
 mlkitTranslate = "17.0.3"
 billing = "8.3.0"
 coil = "2.7.0"
-lottie = "6.6.6"
+lottie = "6.7.1"
 timber = "5.0.1"
-serializationJson = "1.8.0"
-turbine = "1.2.0"
-mockk = "1.14.0"
+serializationJson = "1.10.0"
+turbine = "1.2.1"
+mockk = "1.14.9"
 
 [libraries]
 # AndroidX Core
@@ -63,8 +63,8 @@ ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version
 androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 # Firebase
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-config = { group = "com.google.firebase", name = "firebase-config-ktx" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 # ML Kit
 mlkit-ocr = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlkitOcr" }
 mlkit-translate = { group = "com.google.mlkit", name = "translate", version.ref = "mlkitTranslate" }
@@ -86,8 +86,8 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
 room = { id = "androidx.room", version.ref = "room" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
