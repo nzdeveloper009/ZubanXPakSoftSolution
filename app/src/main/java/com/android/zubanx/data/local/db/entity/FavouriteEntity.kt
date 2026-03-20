@@ -14,7 +14,3 @@ data class FavouriteEntity(
     val category: String = "translate"
 )
 
-object FavouriteCategory {
-    const val TRANSLATE = "translate"
-    const val DICTIONARY = "dictionary"
-}

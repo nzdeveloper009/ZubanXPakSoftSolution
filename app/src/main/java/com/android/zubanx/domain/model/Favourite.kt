@@ -1,7 +1,6 @@
 package com.android.zubanx.domain.model
 
 import android.os.Parcelable
-import com.android.zubanx.data.local.db.entity.FavouriteCategory
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
