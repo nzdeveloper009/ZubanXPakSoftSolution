@@ -4,6 +4,7 @@ import com.android.zubanx.feature.dictionary.DictionaryViewModel
 import com.android.zubanx.feature.dictionary.WordDetailViewModel
 import com.android.zubanx.feature.onboarding.OnboardingViewModel
 import com.android.zubanx.feature.splash.SplashViewModel
+import com.android.zubanx.feature.conversation.ConversationViewModel
 import com.android.zubanx.feature.translate.TranslateViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -14,4 +15,5 @@ val viewModelModule = module {
     viewModelOf(::TranslateViewModel)
     viewModelOf(::DictionaryViewModel)
     viewModelOf(::WordDetailViewModel)
+    viewModelOf(::ConversationViewModel)
 }
