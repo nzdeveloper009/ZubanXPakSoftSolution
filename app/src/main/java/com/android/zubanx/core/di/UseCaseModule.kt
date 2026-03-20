@@ -1,7 +1,15 @@
 package com.android.zubanx.core.di
 
+import com.android.zubanx.domain.usecase.translate.AddFavouriteFromTranslationUseCase
+import com.android.zubanx.domain.usecase.translate.DeleteTranslationUseCase
+import com.android.zubanx.domain.usecase.translate.GetTranslationHistoryUseCase
+import com.android.zubanx.domain.usecase.translate.TranslateUseCase
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
-// Populated per feature plan
 val useCaseModule = module {
+    factoryOf(::TranslateUseCase)
+    factoryOf(::GetTranslationHistoryUseCase)
+    factoryOf(::DeleteTranslationUseCase)
+    factoryOf(::AddFavouriteFromTranslationUseCase)
 }
