@@ -92,3 +92,5 @@ navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref 
 room = { id = "androidx.room", version.ref = "room" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+

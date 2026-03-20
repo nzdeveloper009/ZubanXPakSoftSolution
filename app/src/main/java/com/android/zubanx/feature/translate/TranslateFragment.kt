@@ -24,17 +24,24 @@ import com.android.zubanx.databinding.DialogLanguageSelectBinding
 import com.android.zubanx.databinding.FragmentTranslateBinding
 import com.android.zubanx.databinding.ItemTranslationHistoryBinding
 import com.android.zubanx.domain.model.Translation
+import com.android.zubanx.tts.TtsManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
 class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTranslateBinding::inflate) {
 
     private val viewModel: TranslateViewModel by viewModel()
+    private val ttsManager: TtsManager by inject()
 
     private val historyAdapter = HistoryAdapter(
         onItemClick = { viewModel.onEvent(TranslateContract.Event.HistoryItemClicked(it)) },
-        onDeleteClick = { viewModel.onEvent(TranslateContract.Event.DeleteHistoryItem(it.id)) }
+        onDeleteClick = { viewModel.onEvent(TranslateContract.Event.DeleteHistoryItem(it.id)) },
+        onSpeakClick = { viewModel.onEvent(TranslateContract.Event.SpeakHistoryItem(it)) },
+        onFavouriteClick = { viewModel.onEvent(TranslateContract.Event.ToggleHistoryFavourite(it)) },
+        onShareClick = { viewModel.onEvent(TranslateContract.Event.ShareHistoryItem(it)) },
+        onCopyClick = { viewModel.onEvent(TranslateContract.Event.CopyHistoryItem(it)) }
     )
 
     private val micLauncher = registerForActivityResult(StartActivityForResult()) { result ->
@@ -73,6 +80,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
             binding.etSourceText.text?.clear()
             viewModel.onEvent(TranslateContract.Event.ClearInput)
         }
+        binding.btnPaste.setOnClickListener { pasteFromClipboard() }
         binding.btnMic.setOnClickListener { launchGoogleMic(currentSourceCode()) }
         binding.btnSwapLang.setOnClickListener { viewModel.onEvent(TranslateContract.Event.SwapLanguages) }
         binding.btnSourceLang.setOnClickListener { showLanguagePicker(isSource = true) }
@@ -96,9 +104,13 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
             when (effect) {
                 is TranslateContract.Effect.ShowToast -> requireContext().toast(effect.message)
                 is TranslateContract.Effect.CopyToClipboard -> copyToClipboard(effect.text)
-                is TranslateContract.Effect.SpeakText -> speakText(effect.text, effect.langCode)
+                is TranslateContract.Effect.SpeakText -> ttsManager.speak(effect.text, effect.langCode)
                 is TranslateContract.Effect.ShareText -> shareText(effect.text)
                 is TranslateContract.Effect.LaunchMic -> launchGoogleMic(effect.sourceCode)
+                is TranslateContract.Effect.SetInputText -> {
+                    binding.etSourceText.setText(effect.text)
+                    binding.etSourceText.setSelection(effect.text.length)
+                }
             }
         }
     }
@@ -127,6 +139,15 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
         binding.btnTargetLang.text = state.targetLang.name
         binding.chipExpert.isVisible = state.expert != "DEFAULT"
         binding.chipExpert.text = "Expert: ${state.expert}"
+
+        // Update favourite icon based on whether current translation is already favourited
+        val isFavourited = "${state.inputText}|${state.targetLang.code}" in state.favouritedKeys
+        binding.btnFavourite.setImageResource(
+            if (isFavourited) com.android.zubanx.R.drawable.ic_favorite
+            else com.android.zubanx.R.drawable.ic_favorite_border
+        )
+
+        historyAdapter.favouritedKeys = state.favouritedKeys
         updateHistory(state.history)
     }
 
@@ -135,6 +156,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
         binding.outputCard.isVisible = false
         binding.tvError.isVisible = true
         binding.tvError.text = state.message
+        historyAdapter.favouritedKeys = state.favouritedKeys
         updateHistory(state.history)
     }
 
@@ -143,6 +165,15 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
         binding.tvHistoryLabel.isVisible = visible
         binding.rvHistory.isVisible = visible
         historyAdapter.submitList(history)
+    }
+
+    private fun pasteFromClipboard() {
+        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val text = clipboard.primaryClip?.getItemAt(0)?.coerceToText(requireContext())?.toString()
+        if (!text.isNullOrBlank()) {
+            binding.etSourceText.setText(text)
+            binding.etSourceText.setSelection(text.length)
+        }
     }
 
     private fun launchGoogleMic(sourceCode: String?) {
@@ -202,10 +233,6 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
         clipboard.setPrimaryClip(ClipData.newPlainText("translation", text))
     }
 
-    private fun speakText(text: String, langCode: String) {
-        requireContext().toast("Speaking: $text")
-    }
-
     private fun shareText(text: String) {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
@@ -228,8 +255,18 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
 
     class HistoryAdapter(
         private val onItemClick: (Translation) -> Unit,
-        private val onDeleteClick: (Translation) -> Unit
+        private val onDeleteClick: (Translation) -> Unit,
+        private val onSpeakClick: (Translation) -> Unit,
+        private val onFavouriteClick: (Translation) -> Unit,
+        private val onShareClick: (Translation) -> Unit,
+        private val onCopyClick: (Translation) -> Unit
     ) : ListAdapter<Translation, HistoryAdapter.VH>(DIFF) {
+
+        var favouritedKeys: Set<String> = emptySet()
+            set(value) {
+                field = value
+                notifyDataSetChanged()
+            }
 
         inner class VH(val b: ItemTranslationHistoryBinding) : RecyclerView.ViewHolder(b.root)
 
@@ -244,6 +281,17 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
             holder.b.tvHistoryExpert.text = item.expert
             holder.b.root.setOnClickListener { onItemClick(item) }
             holder.b.btnDeleteHistory.setOnClickListener { onDeleteClick(item) }
+            holder.b.btnHistorySpeak.setOnClickListener { onSpeakClick(item) }
+            holder.b.btnHistoryShare.setOnClickListener { onShareClick(item) }
+            holder.b.btnHistoryCopy.setOnClickListener { onCopyClick(item) }
+
+            val key = "${item.sourceText}|${item.targetLang}"
+            val isFavourited = key in favouritedKeys
+            holder.b.btnHistoryFavourite.setImageResource(
+                if (isFavourited) com.android.zubanx.R.drawable.ic_favorite
+                else com.android.zubanx.R.drawable.ic_favorite_border
+            )
+            holder.b.btnHistoryFavourite.setOnClickListener { onFavouriteClick(item) }
         }
 
         companion object {

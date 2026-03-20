@@ -16,12 +16,14 @@ object TranslateContract {
             val sourceLang: LanguageItem,
             val targetLang: LanguageItem,
             val expert: String,
-            val history: List<Translation> = emptyList()
+            val history: List<Translation> = emptyList(),
+            val favouritedKeys: Set<String> = emptySet()
         ) : State
         data class Error(
             val message: String,
             val inputText: String = "",
-            val history: List<Translation> = emptyList()
+            val history: List<Translation> = emptyList(),
+            val favouritedKeys: Set<String> = emptySet()
         ) : State
     }
 
@@ -39,6 +41,10 @@ object TranslateContract {
         data object ShareTranslation : Event()
         data class HistoryItemClicked(val translation: Translation) : Event()
         data class DeleteHistoryItem(val id: Long) : Event()
+        data class SpeakHistoryItem(val translation: Translation) : Event()
+        data class ToggleHistoryFavourite(val translation: Translation) : Event()
+        data class ShareHistoryItem(val translation: Translation) : Event()
+        data class CopyHistoryItem(val translation: Translation) : Event()
     }
 
     sealed class Effect : UiEffect {
@@ -47,5 +53,6 @@ object TranslateContract {
         data class SpeakText(val text: String, val langCode: String) : Effect()
         data class ShareText(val text: String) : Effect()
         data class LaunchMic(val sourceCode: String?) : Effect()
+        data class SetInputText(val text: String) : Effect()
     }
 }

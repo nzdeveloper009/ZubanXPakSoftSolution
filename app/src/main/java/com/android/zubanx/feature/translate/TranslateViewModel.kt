@@ -4,7 +4,10 @@ import androidx.lifecycle.viewModelScope
 import com.android.zubanx.core.mvi.BaseViewModel
 import com.android.zubanx.core.network.NetworkResult
 import com.android.zubanx.data.local.datastore.AppPreferences
+import com.android.zubanx.domain.model.FavouriteCategory
 import com.android.zubanx.domain.model.Translation
+import com.android.zubanx.domain.usecase.favourite.DeleteFavouriteUseCase
+import com.android.zubanx.domain.usecase.favourite.GetFavouritesByCategoryUseCase
 import com.android.zubanx.domain.usecase.translate.AddFavouriteFromTranslationUseCase
 import com.android.zubanx.domain.usecase.translate.DeleteTranslationUseCase
 import com.android.zubanx.domain.usecase.translate.GetTranslationHistoryUseCase
@@ -18,6 +21,8 @@ class TranslateViewModel(
     private val historyUseCase: GetTranslationHistoryUseCase,
     private val deleteUseCase: DeleteTranslationUseCase,
     private val addFavouriteUseCase: AddFavouriteFromTranslationUseCase,
+    private val getFavouritesUseCase: GetFavouritesByCategoryUseCase,
+    private val deleteFavouriteUseCase: DeleteFavouriteUseCase,
     private val appPreferences: AppPreferences
 ) : BaseViewModel<TranslateContract.State, TranslateContract.Event, TranslateContract.Effect>(
     TranslateContract.State.Idle
@@ -29,6 +34,8 @@ class TranslateViewModel(
     private var currentExpert = "DEFAULT"
     private var lastSuccessTranslation: Translation? = null
     private var historyList: List<Translation> = emptyList()
+    // key = "${sourceText}|${targetLang}", value = favourite row id
+    private var favouriteKeyToId: Map<String, Long> = emptyMap()
 
     init {
         viewModelScope.launch {
@@ -44,9 +51,23 @@ class TranslateViewModel(
                 historyList = list
                 val current = state.value
                 if (current is TranslateContract.State.Success) {
-                    setState { (current as TranslateContract.State.Success).copy(history = list) }
+                    setState { current.copy(history = list) }
                 } else if (current is TranslateContract.State.Error) {
-                    setState { (current as TranslateContract.State.Error).copy(history = list) }
+                    setState { current.copy(history = list) }
+                }
+            }
+        }
+        viewModelScope.launch {
+            getFavouritesUseCase(FavouriteCategory.TRANSLATE).collect { favourites ->
+                favouriteKeyToId = favourites.associate { fav ->
+                    "${fav.sourceText}|${fav.targetLang}" to fav.id
+                }
+                val keys = favouriteKeyToId.keys
+                val current = state.value
+                if (current is TranslateContract.State.Success) {
+                    setState { current.copy(favouritedKeys = keys) }
+                } else if (current is TranslateContract.State.Error) {
+                    setState { current.copy(favouritedKeys = keys) }
                 }
             }
         }
@@ -61,7 +82,7 @@ class TranslateViewModel(
             is TranslateContract.Event.TranslateClicked -> translate(inputText.value)
             is TranslateContract.Event.MicResult -> {
                 inputText.value = event.text
-                translate(event.text)
+                sendEffect(TranslateContract.Effect.SetInputText(event.text))
             }
             is TranslateContract.Event.SourceLangSelected -> currentSourceLang = event.language
             is TranslateContract.Event.TargetLangSelected -> currentTargetLang = event.language
@@ -72,16 +93,26 @@ class TranslateViewModel(
             }
             is TranslateContract.Event.CopyTranslation -> copyTranslation()
             is TranslateContract.Event.SpeakTranslation -> speakTranslation()
-            is TranslateContract.Event.AddToFavourites -> addToFavourites()
+            is TranslateContract.Event.AddToFavourites -> toggleFavourite()
             is TranslateContract.Event.ShareTranslation -> shareTranslation()
             is TranslateContract.Event.HistoryItemClicked -> loadFromHistory(event.translation)
             is TranslateContract.Event.DeleteHistoryItem -> deleteHistory(event.id)
+            is TranslateContract.Event.SpeakHistoryItem -> speakHistoryItem(event.translation)
+            is TranslateContract.Event.ToggleHistoryFavourite -> toggleHistoryFavourite(event.translation)
+            is TranslateContract.Event.ShareHistoryItem -> shareHistoryItem(event.translation)
+            is TranslateContract.Event.CopyHistoryItem -> copyHistoryItem(event.translation)
         }
     }
 
     private fun translate(text: String) {
         if (text.isBlank()) {
-            setState { TranslateContract.State.Error("Enter text to translate", history = historyList) }
+            setState {
+                TranslateContract.State.Error(
+                    "Enter text to translate",
+                    history = historyList,
+                    favouritedKeys = favouriteKeyToId.keys
+                )
+            }
             return
         }
         setState { TranslateContract.State.Translating }
@@ -104,7 +135,8 @@ class TranslateViewModel(
                             sourceLang = currentSourceLang,
                             targetLang = currentTargetLang,
                             expert = currentExpert,
-                            history = historyList
+                            history = historyList,
+                            favouritedKeys = favouriteKeyToId.keys
                         )
                     }
                 }
@@ -113,7 +145,8 @@ class TranslateViewModel(
                         TranslateContract.State.Error(
                             message = result.message,
                             inputText = text,
-                            history = historyList
+                            history = historyList,
+                            favouritedKeys = favouriteKeyToId.keys
                         )
                     }
                 }
@@ -141,11 +174,18 @@ class TranslateViewModel(
         sendEffect(TranslateContract.Effect.SpeakText(success.translatedText, success.targetLang.code))
     }
 
-    private fun addToFavourites() {
+    private fun toggleFavourite() {
         val translation = lastSuccessTranslation ?: return
+        val key = "${translation.sourceText}|${translation.targetLang}"
         viewModelScope.launch {
-            addFavouriteUseCase(translation)
-            sendEffect(TranslateContract.Effect.ShowToast("Added to favourites"))
+            val existingId = favouriteKeyToId[key]
+            if (existingId != null) {
+                deleteFavouriteUseCase(existingId)
+                sendEffect(TranslateContract.Effect.ShowToast("Removed from favourites"))
+            } else {
+                addFavouriteUseCase(translation)
+                sendEffect(TranslateContract.Effect.ShowToast("Added to favourites"))
+            }
         }
     }
 
@@ -167,12 +207,40 @@ class TranslateViewModel(
                 sourceLang = currentSourceLang,
                 targetLang = currentTargetLang,
                 expert = translation.expert,
-                history = historyList
+                history = historyList,
+                favouritedKeys = favouriteKeyToId.keys
             )
         }
     }
 
     private fun deleteHistory(id: Long) {
         viewModelScope.launch { deleteUseCase(id) }
+    }
+
+    private fun speakHistoryItem(translation: Translation) {
+        sendEffect(TranslateContract.Effect.SpeakText(translation.translatedText, translation.targetLang))
+    }
+
+    private fun toggleHistoryFavourite(translation: Translation) {
+        val key = "${translation.sourceText}|${translation.targetLang}"
+        viewModelScope.launch {
+            val existingId = favouriteKeyToId[key]
+            if (existingId != null) {
+                deleteFavouriteUseCase(existingId)
+                sendEffect(TranslateContract.Effect.ShowToast("Removed from favourites"))
+            } else {
+                addFavouriteUseCase(translation)
+                sendEffect(TranslateContract.Effect.ShowToast("Added to favourites"))
+            }
+        }
+    }
+
+    private fun shareHistoryItem(translation: Translation) {
+        sendEffect(TranslateContract.Effect.ShareText("${translation.sourceText}\n${translation.translatedText}"))
+    }
+
+    private fun copyHistoryItem(translation: Translation) {
+        sendEffect(TranslateContract.Effect.CopyToClipboard(translation.translatedText))
+        sendEffect(TranslateContract.Effect.ShowToast("Copied to clipboard"))
     }
 }

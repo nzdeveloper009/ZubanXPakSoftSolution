@@ -68,6 +68,7 @@ dependencies {
     // Room 3
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(project(":cipherLib"))
     ksp(libs.room.compiler)
 
     // Koin

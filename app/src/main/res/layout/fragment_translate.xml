@@ -118,6 +118,14 @@
                             android:visibility="gone" />
 
                         <ImageButton
+                            android:id="@+id/btnPaste"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:src="@drawable/ic_paste"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Paste from clipboard" />
+
+                        <ImageButton
                             android:id="@+id/btnMic"
                             android:layout_width="36dp"
                             android:layout_height="36dp"

@@ -1,6 +1,8 @@
 package com.android.zubanx.app
 
 import android.app.Application
+import android.util.Log
+import com.android.cipherlib.NativeLib
 import com.android.zubanx.BuildConfig
 import com.android.zubanx.core.di.billingModule
 import com.android.zubanx.core.di.databaseModule
@@ -28,6 +30,8 @@ class ZubanApp : Application() {
         initTimber()
         initKoin()
         get<BillingManager>().connect()
+
+        NativeLib.loadLibrary()
     }
 
     private fun initTimber() {
@@ -56,3 +60,5 @@ class ZubanApp : Application() {
         }
     }
 }
+
+private const val TAG = "ZubanApp_Log"

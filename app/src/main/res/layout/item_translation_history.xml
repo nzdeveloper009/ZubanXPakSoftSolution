@@ -67,5 +67,54 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <!-- Action buttons: speak, favourite, share, copy -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+
+            <ImageButton
+                android:id="@+id/btnHistorySpeak"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_volume_up"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Listen"
+                android:padding="6dp" />
+
+            <ImageButton
+                android:id="@+id/btnHistoryFavourite"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_favorite_border"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Favourite"
+                android:padding="6dp" />
+
+            <ImageButton
+                android:id="@+id/btnHistoryShare"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_share"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Share"
+                android:padding="6dp" />
+
+            <ImageButton
+                android:id="@+id/btnHistoryCopy"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_copy"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Copy"
+                android:padding="6dp" />
+
+        </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

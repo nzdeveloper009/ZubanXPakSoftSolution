@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ZubanX"
 include(":app")
+include(":cipherLib")

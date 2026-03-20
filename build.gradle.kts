@@ -6,4 +6,5 @@ plugins {
     alias(libs.plugins.navigation.safeargs) apply false
     alias(libs.plugins.room) apply false
     alias(libs.plugins.google.gms.google.services) apply false
+    alias(libs.plugins.android.library) apply false
 }
