@@ -70,7 +70,6 @@ class PremiumFragment : BaseFragment<FragmentPremiumBinding>(FragmentPremiumBind
                 card.strokeWidth = if (isSelected) 4 else 0
             }
 
-            state.errorMessage?.let { requireContext().toast(it) }
         }
 
         collectFlow(viewModel.effect) { effect ->

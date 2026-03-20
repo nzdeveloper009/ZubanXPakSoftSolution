@@ -31,8 +31,9 @@ class PremiumViewModel(
                         setState { copy(isPremium = true) }
                         sendEffect(PremiumContract.Effect.NavigateBack)
                     }
-                    is BillingState.Error -> setState {
-                        copy(isLoading = false, errorMessage = billingState.message)
+                    is BillingState.Error -> {
+                        setState { copy(isLoading = false, errorMessage = null) }
+                        sendEffect(PremiumContract.Effect.ShowToast(billingState.message))
                     }
                 }
             }
