@@ -28,9 +28,18 @@ class ConversationViewModel(
             }
             is ConversationContract.Event.MicResultA -> translateTurn(event.text, ConversationContract.SpeakerSide.A)
             is ConversationContract.Event.MicResultB -> translateTurn(event.text, ConversationContract.SpeakerSide.B)
-            is ConversationContract.Event.LangASelected -> setState { (this as ConversationContract.State.Active).copy(langA = event.lang) }
-            is ConversationContract.Event.LangBSelected -> setState { (this as ConversationContract.State.Active).copy(langB = event.lang) }
-            is ConversationContract.Event.ClearConversation -> setState { (this as ConversationContract.State.Active).copy(messages = emptyList()) }
+            is ConversationContract.Event.LangASelected -> {
+                val current = activeState ?: return
+                setState { current.copy(langA = event.lang) }
+            }
+            is ConversationContract.Event.LangBSelected -> {
+                val current = activeState ?: return
+                setState { current.copy(langB = event.lang) }
+            }
+            is ConversationContract.Event.ClearConversation -> {
+                val current = activeState ?: return
+                setState { current.copy(messages = emptyList()) }
+            }
         }
     }
 

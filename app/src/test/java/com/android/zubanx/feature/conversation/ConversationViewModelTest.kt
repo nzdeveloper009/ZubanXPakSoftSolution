@@ -15,6 +15,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -72,6 +73,19 @@ class ConversationViewModelTest {
         assertEquals("marhaba", state.messages[0].originalText)
         assertEquals("Hello", state.messages[0].translatedText)
         assertEquals(ConversationContract.SpeakerSide.B, state.messages[0].speakerSide)
+    }
+
+    @Test
+    fun `MicResultA on api error does not add message to list`() = runTest {
+        coEvery { translateUseCase(any(), any(), any()) } returns
+            NetworkResult.Error("Network error")
+
+        viewModel.onEvent(ConversationContract.Event.MicResultA("hello"))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.state.first() as ConversationContract.State.Active
+        assertTrue(state.messages.isEmpty())
+        assertFalse(state.isTranslatingA)
     }
 
     @Test
