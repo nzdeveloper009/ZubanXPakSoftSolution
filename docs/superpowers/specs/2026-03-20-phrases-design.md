@@ -24,8 +24,9 @@ Settings is removed from the bottom nav. The 5 tabs become:
 | 5 | Favourites | nav_favourite |
 
 ### Translate Screen App Bar
-A `MaterialToolbar` is added at the top of `fragment_translate.xml` with `app:title="ZubanX"`.
-- **Right icons (end menu):** diamond (`ic_premium`) → navigates to Premium screen via global nav action; gear (`ic_settings`) → navigates to Settings via `findNavController().navigate(R.id.nav_settings)`
+A `MaterialToolbar` (id: `toolbar`) is added inside a new `AppBarLayout` at the top of `fragment_translate.xml`, above the existing language selector bar. The `CoordinatorLayout` root is unchanged — the `AppBarLayout` is the first child, and the existing content (`langSelectorBar` and below) follows it with no `layout_behavior` change needed (the content does not scroll under the app bar).
+- `app:title="ZubanX"` on the toolbar
+- **Right icons (end menu):** diamond (`ic_premium`) → navigates to Premium screen via global nav action; gear (`ic_settings`) → navigates to Settings via `findNavController().navigate(R.id.settingsFragment)` (`settingsFragment` is the start destination of `nav_settings.xml` and is addressable from any graph since all nested graphs are included in `nav_graph.xml`)
 - The toolbar is set as the support action bar via `(activity as AppCompatActivity).setSupportActionBar(binding.toolbar)` in `TranslateFragment.onViewCreated`
 
 ### MainActivity Changes
@@ -210,9 +211,17 @@ Effects: SpeakText(text, langCode), CopyToClipboard(text), ShowToast(msg), Navig
 
 ```
 phrasesFragment (start destination)
-  └─→ phrasesCategoryFragment  [arg: categoryId: String]
-        └─→ phrasesZoomFragment  [args: translatedText: String, langCode: String]
+  └─[action_phrases_to_category]→ phrasesCategoryFragment  [arg: categoryId: String]
+        └─[action_category_to_zoom]→ phrasesZoomFragment  [args: translatedText: String, langCode: String]
 ```
+
+**Action IDs:**
+- `action_phrases_to_category` — defined on `phrasesFragment`, carries `categoryId: String`
+- `action_category_to_zoom` — defined on `phrasesCategoryFragment`, carries `translatedText: String` and `langCode: String`
+
+**Fragment navigate calls:**
+- `PhrasesFragment`: `findNavController().navigate(PhrasesFragmentDirections.actionPhrasesToCategory(categoryId))`
+- `PhrasesCategoryFragment` (from zoom effect): `findNavController().navigate(PhrasesCategoryFragmentDirections.actionCategoryToZoom(translatedText, langCode))`
 
 ---
 
