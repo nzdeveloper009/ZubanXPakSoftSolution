@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_dictionary"
-    android:label="Dictionary">
-    <!-- Fragments added in Plan 6: Dictionary & Content Features -->
+    android:label="Dictionary"
+    app:startDestination="@id/dictionaryFragment">
+
+    <fragment
+        android:id="@+id/dictionaryFragment"
+        android:name="com.android.zubanx.feature.dictionary.DictionaryFragment"
+        android:label="Dictionary"
+        tools:layout="@layout/fragment_dictionary">
+
+        <action
+            android:id="@+id/action_dictionary_to_wordDetail"
+            app:destination="@id/wordDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/wordDetailFragment"
+        android:name="com.android.zubanx.feature.dictionary.WordDetailFragment"
+        android:label="Word Detail"
+        tools:layout="@layout/fragment_word_detail" />
+
 </navigation>
