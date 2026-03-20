@@ -1,43 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/itemRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="4dp">
 
-    <!-- Original text (what was spoken) -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardOriginal"
+    <!-- Original text row: bubble + listen button -->
+    <LinearLayout
+        android:id="@+id/rowOriginal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:maxWidth="240dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="2dp">
 
-        <TextView
-            android:id="@+id/tvOriginal"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardOriginal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textAppearance="?attr/textAppearanceBodyMedium" />
+            android:maxWidth="220dp">
 
-    </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/tvOriginal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
 
-    <!-- Translation -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardTranslated"
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageButton
+            android:id="@+id/btnSpeakOriginal"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="6dp"
+            android:src="@drawable/ic_volume_up"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Listen original"
+            android:padding="6dp" />
+
+    </LinearLayout>
+
+    <!-- Translated text row: bubble + listen button -->
+    <LinearLayout
+        android:id="@+id/rowTranslated"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="240dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tvTranslated"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTranslated"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textAppearance="?attr/textAppearanceBodySmall" />
+            android:maxWidth="220dp">
 
-    </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/tvTranslated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?attr/colorPrimary" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageButton
+            android:id="@+id/btnSpeakTranslated"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="6dp"
+            android:src="@drawable/ic_volume_up"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Listen translation"
+            android:padding="6dp"
+            android:tint="?attr/colorPrimary" />
+
+    </LinearLayout>
 
 </LinearLayout>

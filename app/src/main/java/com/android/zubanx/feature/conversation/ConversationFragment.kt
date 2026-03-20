@@ -18,11 +18,14 @@ import com.android.zubanx.core.utils.toast
 import com.android.zubanx.databinding.FragmentConversationBinding
 import com.android.zubanx.databinding.ItemConversationMessageBinding
 import com.android.zubanx.feature.translate.LanguageItem
+import com.android.zubanx.tts.TtsManager
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ConversationFragment : BaseFragment<FragmentConversationBinding>(FragmentConversationBinding::inflate) {
 
     private val viewModel: ConversationViewModel by viewModel()
+    private val ttsManager: TtsManager by inject()
 
     // Track which speaker launched the mic so the result routes correctly
     private var pendingMicSpeaker: ConversationContract.SpeakerSide? = null
@@ -45,7 +48,10 @@ class ConversationFragment : BaseFragment<FragmentConversationBinding>(FragmentC
         pendingMicSpeaker = null  // always reset, moved outside the if block
     }
 
-    private val adapter = MessageAdapter()
+    private val adapter = MessageAdapter(
+        onSpeakOriginal = { text, lang -> ttsManager.speak(text, lang) },
+        onSpeakTranslated = { text, lang -> ttsManager.speak(text, lang) }
+    )
 
     override fun setupViews() {
         binding.rvMessages.layoutManager = LinearLayoutManager(requireContext()).apply {
@@ -76,8 +82,7 @@ class ConversationFragment : BaseFragment<FragmentConversationBinding>(FragmentC
             when (effect) {
                 is ConversationContract.Effect.ShowToast -> requireContext().toast(effect.message)
                 is ConversationContract.Effect.SpeakText -> {
-                    // TTS stub — toast until TTS integration is added
-                    requireContext().toast("Speaking: ${effect.text}")
+                    ttsManager.speak(effect.text, effect.langCode)
                 }
                 is ConversationContract.Effect.LaunchMic -> launchMic(effect.langCode, effect.speaker)
             }
@@ -130,7 +135,10 @@ class ConversationFragment : BaseFragment<FragmentConversationBinding>(FragmentC
     }
 
     // --- Adapter ---
-    class MessageAdapter : ListAdapter<ConversationContract.ConversationMessage, MessageAdapter.VH>(DIFF) {
+    class MessageAdapter(
+        private val onSpeakOriginal: (text: String, lang: String) -> Unit,
+        private val onSpeakTranslated: (text: String, lang: String) -> Unit
+    ) : ListAdapter<ConversationContract.ConversationMessage, MessageAdapter.VH>(DIFF) {
 
         inner class VH(val b: ItemConversationMessageBinding) : RecyclerView.ViewHolder(b.root)
 
@@ -142,19 +150,27 @@ class ConversationFragment : BaseFragment<FragmentConversationBinding>(FragmentC
             holder.b.tvOriginal.text = msg.originalText
             holder.b.tvTranslated.text = msg.translatedText
 
+            // Speak buttons — tap to listen, tap again to repeat
+            holder.b.btnSpeakOriginal.setOnClickListener {
+                onSpeakOriginal(msg.originalText, msg.originalLang)
+            }
+            holder.b.btnSpeakTranslated.setOnClickListener {
+                onSpeakTranslated(msg.translatedText, msg.targetLang)
+            }
+
             // Align Speaker A to left, Speaker B to right
             val gravity = if (msg.speakerSide == ConversationContract.SpeakerSide.A) {
                 android.view.Gravity.START
             } else {
                 android.view.Gravity.END
             }
-            (holder.b.cardOriginal.layoutParams as? android.widget.LinearLayout.LayoutParams)?.let {
+            (holder.b.rowOriginal.layoutParams as? android.widget.LinearLayout.LayoutParams)?.let {
                 it.gravity = gravity
-                holder.b.cardOriginal.layoutParams = it
+                holder.b.rowOriginal.layoutParams = it
             }
-            (holder.b.cardTranslated.layoutParams as? android.widget.LinearLayout.LayoutParams)?.let {
+            (holder.b.rowTranslated.layoutParams as? android.widget.LinearLayout.LayoutParams)?.let {
                 it.gravity = gravity
-                holder.b.cardTranslated.layoutParams = it
+                holder.b.rowTranslated.layoutParams = it
             }
         }
 
