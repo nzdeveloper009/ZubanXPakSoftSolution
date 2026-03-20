@@ -1,11 +1,11 @@
 package com.android.zubanx.feature.favourite
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.android.zubanx.databinding.BottomSheetFavouriteDetailBinding
 import com.android.zubanx.domain.model.Favourite
 import com.android.zubanx.tts.TtsManager
@@ -17,6 +17,7 @@ class FavouriteDetailBottomSheet : BottomSheetDialogFragment() {
     private var _binding: BottomSheetFavouriteDetailBinding? = null
     private val binding get() = _binding!!
     private val ttsManager: TtsManager by inject()
+    private val viewModel: FavouriteViewModel by viewModels(ownerProducer = { requireParentFragment() })
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = BottomSheetFavouriteDetailBinding.inflate(inflater, container, false)
@@ -37,22 +38,12 @@ class FavouriteDetailBottomSheet : BottomSheetDialogFragment() {
         binding.tvTranslatedText.text = favourite.translatedText
 
         binding.btnCopy.setOnClickListener {
-            val clipboard = requireContext().getSystemService(android.content.Context.CLIPBOARD_SERVICE)
-                as android.content.ClipboardManager
-            clipboard.setPrimaryClip(android.content.ClipData.newPlainText(
-                "favourite",
-                "${favourite.sourceText} → ${favourite.translatedText}"
-            ))
-            android.widget.Toast.makeText(requireContext(), "Copied", android.widget.Toast.LENGTH_SHORT).show()
+            viewModel.onEvent(FavouriteContract.Event.CopyText("${favourite.sourceText} → ${favourite.translatedText}"))
             dismiss()
         }
 
         binding.btnShare.setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, "${favourite.sourceText} → ${favourite.translatedText}")
-            }
-            startActivity(Intent.createChooser(intent, "Share"))
+            viewModel.onEvent(FavouriteContract.Event.ShareText("${favourite.sourceText} → ${favourite.translatedText}"))
             dismiss()
         }
 

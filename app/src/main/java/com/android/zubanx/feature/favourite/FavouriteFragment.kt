@@ -12,12 +12,15 @@ import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
 import com.android.zubanx.databinding.FragmentFavouriteBinding
+import com.android.zubanx.tts.TtsManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouriteFragment : BaseFragment<FragmentFavouriteBinding>(FragmentFavouriteBinding::inflate) {
 
     private val viewModel: FavouriteViewModel by viewModel()
+    private val ttsManager: TtsManager by inject()
     private lateinit var translateAdapter: FavouriteAdapter
     private lateinit var dictionaryAdapter: FavouriteAdapter
 
@@ -52,7 +55,7 @@ class FavouriteFragment : BaseFragment<FragmentFavouriteBinding>(FragmentFavouri
             override fun onMove(rv: RecyclerView, vh: RecyclerView.ViewHolder, t: RecyclerView.ViewHolder) = false
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val pos = viewHolder.bindingAdapterPosition
-                if (pos == RecyclerView.NO_ID.toInt()) return
+                if (pos == RecyclerView.NO_POSITION) return
                 val item = adapter.currentList[pos]
                 adapter.notifyItemChanged(pos) // restore immediately
                 viewModel.onEvent(FavouriteContract.Event.RequestDelete(item.id))
@@ -86,8 +89,8 @@ class FavouriteFragment : BaseFragment<FragmentFavouriteBinding>(FragmentFavouri
                         .show(childFragmentManager, "favourite_detail")
                 }
                 is FavouriteContract.Effect.NavigateToWordDetail -> {
-                    // Navigation to WordDetailFragment via nav component
-                    // For now show a toast — nav action wired in Task 7
+                    // Navigation wired in Task 7 — show toast as temporary fallback
+                    requireContext().toast("Opening ${effect.word}...")
                 }
                 is FavouriteContract.Effect.CopyToClipboard -> {
                     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -101,7 +104,7 @@ class FavouriteFragment : BaseFragment<FragmentFavouriteBinding>(FragmentFavouri
                     }
                     startActivity(Intent.createChooser(intent, "Share"))
                 }
-                is FavouriteContract.Effect.Speak -> Unit // Handled in BottomSheet
+                is FavouriteContract.Effect.Speak -> ttsManager.speak(effect.text, effect.lang)
                 is FavouriteContract.Effect.ShowToast -> requireContext().toast(effect.message)
             }
         }
