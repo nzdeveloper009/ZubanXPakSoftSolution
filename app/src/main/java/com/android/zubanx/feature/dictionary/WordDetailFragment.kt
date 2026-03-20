@@ -3,7 +3,10 @@ package com.android.zubanx.feature.dictionary
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.android.zubanx.R
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.utils.collectFlow
@@ -13,8 +16,9 @@ import org.koin.android.ext.android.inject
 import com.android.zubanx.databinding.FragmentWordDetailBinding
 import com.android.zubanx.domain.model.DictionaryEntry
 import com.android.zubanx.domain.repository.DictionaryRepository
-import kotlinx.coroutines.runBlocking
-import org.koin.android.ext.android.inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordDetailBinding::inflate) {
@@ -25,10 +29,12 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
     private val ttsManager: TtsManager by inject()
 
     override fun setupViews() {
-        val entry = runBlocking { repository.getCached(args.word, args.language) }
-            ?: DictionaryEntry(word = args.word, language = args.language, definition = "", timestamp = 0L)
-
-        viewModel.onEvent(WordDetailContract.Event.Load(entry))
+        lifecycleScope.launch {
+            val entry = withContext(Dispatchers.IO) {
+                repository.getCached(args.word, args.language)
+            } ?: DictionaryEntry(word = args.word, language = args.language, definition = "", timestamp = 0L)
+            viewModel.onEvent(WordDetailContract.Event.Load(entry))
+        }
 
         binding.btnDetailSpeak.setOnClickListener {
             viewModel.onEvent(WordDetailContract.Event.SpeakWord)
@@ -38,6 +44,9 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
         }
         binding.btnAiEnrich.setOnClickListener {
             viewModel.onEvent(WordDetailContract.Event.EnrichWithAi("GPT"))
+        }
+        binding.btnFavourite.setOnClickListener {
+            viewModel.onEvent(WordDetailContract.Event.ToggleFavourite)
         }
     }
 
@@ -56,6 +65,7 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
                     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("definition", effect.text))
                 }
+                is WordDetailContract.Effect.ShowFavourited -> requireContext().toast("Added to favourites")
             }
         }
     }
@@ -86,5 +96,8 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
             binding.tvAiInsight.text = state.aiInsight
             binding.btnAiEnrich.isVisible = false
         }
+
+        val favIcon = if (state.isFavourite) R.drawable.ic_favorite else R.drawable.ic_favorite_border
+        binding.btnFavourite.setImageDrawable(ContextCompat.getDrawable(requireContext(), favIcon))
     }
 }

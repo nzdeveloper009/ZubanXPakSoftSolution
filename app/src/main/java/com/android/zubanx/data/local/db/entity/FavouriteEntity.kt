@@ -10,5 +10,7 @@ data class FavouriteEntity(
     val translatedText: String,
     val sourceLang: String,
     val targetLang: String,
-    val timestamp: Long
+    val timestamp: Long,
+    val category: String = "translate"
 )
+

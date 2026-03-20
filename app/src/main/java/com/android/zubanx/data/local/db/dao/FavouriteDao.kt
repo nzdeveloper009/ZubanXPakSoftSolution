@@ -20,4 +20,7 @@ interface FavouriteDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM favourites WHERE sourceText = :sourceText)")
     suspend fun existsBySourceText(sourceText: String): Boolean
+
+    @Query("SELECT * FROM favourites WHERE category = :category ORDER BY timestamp DESC")
+    fun getAllByCategory(category: String): Flow<List<FavouriteEntity>>
 }

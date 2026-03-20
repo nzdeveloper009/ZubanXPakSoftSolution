@@ -11,6 +11,9 @@ interface AppPreferences {
     val offlineMode: Flow<Boolean>
     val onboardingComplete: Flow<Boolean>
 
+    val autoSpeak: Flow<Boolean>
+    val floatingOverlay: Flow<Boolean>
+
     suspend fun setTheme(value: String)
     suspend fun setSelectedExpert(value: String)
     suspend fun setSourceLang(value: String)
@@ -18,4 +21,6 @@ interface AppPreferences {
     suspend fun setIsPremium(value: Boolean)
     suspend fun setOfflineMode(value: Boolean)
     suspend fun setOnboardingComplete(value: Boolean)
+    suspend fun setAutoSpeak(value: Boolean)
+    suspend fun setFloatingOverlay(value: Boolean)
 }

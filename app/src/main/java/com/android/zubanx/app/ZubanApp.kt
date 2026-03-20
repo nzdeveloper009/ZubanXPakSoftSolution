@@ -2,6 +2,7 @@ package com.android.zubanx.app
 
 import android.app.Application
 import com.android.zubanx.BuildConfig
+import com.android.zubanx.core.di.billingModule
 import com.android.zubanx.core.di.databaseModule
 import com.android.zubanx.core.di.dataStoreModule
 import com.android.zubanx.core.di.mlKitModule
@@ -12,6 +13,8 @@ import com.android.zubanx.core.di.ttsModule
 import com.android.zubanx.core.di.useCaseModule
 import com.android.zubanx.core.di.utilsModule
 import com.android.zubanx.core.di.viewModelModule
+import com.android.zubanx.billing.BillingManager
+import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -24,6 +27,7 @@ class ZubanApp : Application() {
         super.onCreate()
         initTimber()
         initKoin()
+        get<BillingManager>().connect()
     }
 
     private fun initTimber() {
@@ -46,7 +50,8 @@ class ZubanApp : Application() {
                 repositoryModule,
                 useCaseModule,
                 viewModelModule,
-                ttsModule
+                ttsModule,
+                billingModule
             )
         }
     }

@@ -15,6 +15,8 @@ class AppPreferencesImpl(private val dataStore: DataStore<Preferences>) : AppPre
         val IS_PREMIUM = booleanPreferencesKey("is_premium")
         val OFFLINE_MODE = booleanPreferencesKey("offline_mode")
         val ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
+        val AUTO_SPEAK = booleanPreferencesKey("auto_speak")
+        val FLOATING_OVERLAY = booleanPreferencesKey("floating_overlay")
     }
 
     override val theme: Flow<String> = dataStore.data.map { it[Keys.THEME] ?: "SYSTEM" }
@@ -24,6 +26,8 @@ class AppPreferencesImpl(private val dataStore: DataStore<Preferences>) : AppPre
     override val isPremium: Flow<Boolean> = dataStore.data.map { it[Keys.IS_PREMIUM] ?: false }
     override val offlineMode: Flow<Boolean> = dataStore.data.map { it[Keys.OFFLINE_MODE] ?: false }
     override val onboardingComplete: Flow<Boolean> = dataStore.data.map { it[Keys.ONBOARDING_COMPLETE] ?: false }
+    override val autoSpeak: Flow<Boolean> = dataStore.data.map { it[Keys.AUTO_SPEAK] ?: false }
+    override val floatingOverlay: Flow<Boolean> = dataStore.data.map { it[Keys.FLOATING_OVERLAY] ?: false }
 
     override suspend fun setTheme(value: String) { dataStore.edit { it[Keys.THEME] = value } }
     override suspend fun setSelectedExpert(value: String) { dataStore.edit { it[Keys.SELECTED_EXPERT] = value } }
@@ -32,4 +36,6 @@ class AppPreferencesImpl(private val dataStore: DataStore<Preferences>) : AppPre
     override suspend fun setIsPremium(value: Boolean) { dataStore.edit { it[Keys.IS_PREMIUM] = value } }
     override suspend fun setOfflineMode(value: Boolean) { dataStore.edit { it[Keys.OFFLINE_MODE] = value } }
     override suspend fun setOnboardingComplete(value: Boolean) { dataStore.edit { it[Keys.ONBOARDING_COMPLETE] = value } }
+    override suspend fun setAutoSpeak(value: Boolean) { dataStore.edit { it[Keys.AUTO_SPEAK] = value } }
+    override suspend fun setFloatingOverlay(value: Boolean) { dataStore.edit { it[Keys.FLOATING_OVERLAY] = value } }
 }
