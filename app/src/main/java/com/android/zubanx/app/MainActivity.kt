@@ -82,6 +82,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             R.id.splashFragment,
             R.id.onboardingFragment,
             R.id.settingsFragment,
+            R.id.phrasesCategoryFragment,
+            R.id.phrasesZoomFragment,
             // R.id.premiumFragment,
             // R.id.wordDetailFragment,
         )
