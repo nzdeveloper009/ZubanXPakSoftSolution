@@ -102,9 +102,12 @@ class ConversationFragment : BaseFragment<FragmentConversationBinding>(FragmentC
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now")
             putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, requireContext().packageName)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "$langCode-${langCode.uppercase()}")
+            val localeTag = if ('-' in langCode) langCode else "$langCode-${langCode.uppercase()}"
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, localeTag)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, langCode)
         }
+        // TODO: Add RECORD_AUDIO runtime permission check before launching
+        // (pre-existing gap shared with TranslateFragment — defer to a dedicated permissions plan)
         micLauncher.launch(intent)
     }
 

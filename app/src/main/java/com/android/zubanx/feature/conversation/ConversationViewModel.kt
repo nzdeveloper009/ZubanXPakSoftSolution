@@ -53,12 +53,10 @@ class ConversationViewModel(
             ConversationContract.SpeakerSide.B -> currentState.langB.code to currentState.langA.code
         }
 
-        setState {
-            (this as ConversationContract.State.Active).copy(
-                isTranslatingA = speaker == ConversationContract.SpeakerSide.A,
-                isTranslatingB = speaker == ConversationContract.SpeakerSide.B
-            )
-        }
+        setState { currentState.copy(
+            isTranslatingA = speaker == ConversationContract.SpeakerSide.A,
+            isTranslatingB = speaker == ConversationContract.SpeakerSide.B
+        ) }
 
         viewModelScope.launch {
             when (val result = translateUseCase(text, sourceLang, targetLang)) {
@@ -72,22 +70,21 @@ class ConversationViewModel(
                         targetLang = targetLang,
                         timestamp = System.currentTimeMillis()
                     )
-                    setState {
-                        (this as ConversationContract.State.Active).copy(
-                            messages = messages + message,
-                            isTranslatingA = false,
-                            isTranslatingB = false
-                        )
-                    }
+                    // Read fresh state snapshot after the coroutine resumed (lang may have changed)
+                    val fresh = activeState ?: return@launch
+                    setState { fresh.copy(
+                        messages = fresh.messages + message,
+                        isTranslatingA = false,
+                        isTranslatingB = false
+                    ) }
                     sendEffect(ConversationContract.Effect.SpeakText(result.data.translatedText, targetLang))
                 }
                 is NetworkResult.Error -> {
-                    setState {
-                        (this as ConversationContract.State.Active).copy(
-                            isTranslatingA = false,
-                            isTranslatingB = false
-                        )
-                    }
+                    val fresh = activeState ?: return@launch
+                    setState { fresh.copy(
+                        isTranslatingA = false,
+                        isTranslatingB = false
+                    ) }
                     sendEffect(ConversationContract.Effect.ShowToast(result.message))
                 }
             }
