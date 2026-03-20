@@ -1,8 +1,9 @@
 package com.android.zubanx.data.remote.api
 
 import com.android.zubanx.core.network.NetworkResult
-import com.android.zubanx.data.remote.dto.AiExpertResponseDto
+import com.android.zubanx.security.KeyDecryptionModule
 import io.ktor.client.HttpClient
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
@@ -11,37 +12,37 @@ import org.junit.Test
 class AiExpertServiceImplTest {
 
     private val client: HttpClient = mockk(relaxed = true)
-    private val service: AiExpertService = AiExpertServiceImpl(client)
+    private val keyModule: KeyDecryptionModule = mockk {
+        every { getDecryptedKey(any()) } returns ""
+    }
+    private val service = AiExpertServiceImpl(client, keyModule)
 
     @Test
-    fun `ask with GPT expert returns Error — stub not yet implemented`() = runTest {
-        val result: NetworkResult<AiExpertResponseDto> = service.ask(
-            expert = "GPT",
-            prompt = "Translate 'Hello' to Spanish"
-        )
+    fun `ask with DEFAULT expert returns Error explaining to use TranslateApiService`() = runTest {
+        val result = service.ask("DEFAULT", "Translate: Hello")
         assertTrue(result is NetworkResult.Error)
-        assertTrue((result as NetworkResult.Error).message.contains("not implemented", ignoreCase = true))
+        assertTrue((result as NetworkResult.Error).message.contains("DEFAULT"))
     }
 
     @Test
-    fun `ask with GEMINI expert returns Error — stub not yet implemented`() = runTest {
-        val result = service.ask(expert = "GEMINI", prompt = "Explain 'run'")
+    fun `ask with unknown expert returns Error`() = runTest {
+        val result = service.ask("UNKNOWN_EXPERT", "some prompt")
         assertTrue(result is NetworkResult.Error)
-        assertTrue((result as NetworkResult.Error).message.contains("not implemented", ignoreCase = true))
     }
 
     @Test
-    fun `ask with CLAUDE expert returns Error — stub not yet implemented`() = runTest {
-        val result = service.ask(expert = "CLAUDE", prompt = "Translate 'cat'")
-        assertTrue(result is NetworkResult.Error)
-        assertTrue((result as NetworkResult.Error).message.contains("not implemented", ignoreCase = true))
+    fun `buildTranslationPrompt contains source and target language and text`() {
+        val prompt = AiExpertServiceImpl.buildTranslationPrompt("Hello", "en", "es")
+        assertTrue(prompt.contains("Hello"))
+        assertTrue(prompt.contains("en"))
+        assertTrue(prompt.contains("es"))
+        assertTrue(prompt.contains("only the translated"))
     }
 
     @Test
-    fun `ask with DEFAULT expert returns Error — stub not yet implemented`() = runTest {
-        val result = service.ask(expert = "DEFAULT", prompt = "Translate 'dog'")
+    fun `ask with GPT and empty key returns NetworkResult Error`() = runTest {
+        every { keyModule.getDecryptedKey("openai_key_enc") } returns ""
+        val result = service.ask("GPT", "Translate: Hello")
         assertTrue(result is NetworkResult.Error)
-        assertTrue((result as NetworkResult.Error).message.contains("not implemented", ignoreCase = true))
     }
-
 }
