@@ -8,7 +8,7 @@ import com.android.zubanx.domain.model.DictionaryEntry
 object DictionaryContract {
 
     sealed interface State : UiState {
-        data object Idle : State
+        data class Idle(val history: List<DictionaryEntry> = emptyList()) : State
         data object Searching : State
         data class Success(
             val entry: DictionaryEntry,

@@ -14,7 +14,7 @@ import com.android.zubanx.data.local.db.entity.*
         DictionaryEntity::class,
         OfflineLanguagePackEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(ListStringConverter::class)

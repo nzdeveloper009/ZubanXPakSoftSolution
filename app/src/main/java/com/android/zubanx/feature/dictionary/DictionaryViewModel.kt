@@ -12,7 +12,7 @@ class DictionaryViewModel(
     private val lookupUseCase: LookupWordUseCase,
     private val historyUseCase: GetDictionaryHistoryUseCase
 ) : BaseViewModel<DictionaryContract.State, DictionaryContract.Event, DictionaryContract.Effect>(
-    DictionaryContract.State.Idle
+    DictionaryContract.State.Idle()
 ) {
     private var currentQuery = ""
     private var historyList: List<DictionaryEntry> = emptyList()
@@ -22,10 +22,11 @@ class DictionaryViewModel(
             historyUseCase().collect { list ->
                 historyList = list
                 val current = state.value
-                if (current is DictionaryContract.State.Success) {
-                    setState { (current as DictionaryContract.State.Success).copy(history = list) }
-                } else if (current is DictionaryContract.State.Error) {
-                    setState { (current as DictionaryContract.State.Error).copy(history = list) }
+                when (current) {
+                    is DictionaryContract.State.Idle -> setState { current.copy(history = list) }
+                    is DictionaryContract.State.Success -> setState { current.copy(history = list) }
+                    is DictionaryContract.State.Error -> setState { current.copy(history = list) }
+                    is DictionaryContract.State.Searching -> Unit
                 }
             }
         }
@@ -41,12 +42,11 @@ class DictionaryViewModel(
             }
             is DictionaryContract.Event.ClearSearch -> {
                 currentQuery = ""
-                setState { DictionaryContract.State.Idle }
+                setState { DictionaryContract.State.Idle(history = historyList) }
             }
             is DictionaryContract.Event.HistoryItemClicked -> loadFromHistory(event.entry)
             is DictionaryContract.Event.NavigateToDetail -> {
-                val entry = (state.value as? DictionaryContract.State.Success)?.entry ?: return
-                sendEffect(DictionaryContract.Effect.OpenWordDetail(entry))
+                sendEffect(DictionaryContract.Effect.OpenWordDetail(event.entry))
             }
         }
     }

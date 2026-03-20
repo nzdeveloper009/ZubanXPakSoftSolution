@@ -13,6 +13,9 @@ class FavouriteRepositoryImpl(private val dao: FavouriteDao) : FavouriteReposito
     override fun getAll(): Flow<List<Favourite>> =
         dao.getAll().map { it.map { entity -> entity.toDomain() } }
 
+    override fun getByCategory(category: String): Flow<List<Favourite>> =
+        dao.getAllByCategory(category).map { it.map { entity -> entity.toDomain() } }
+
     override suspend fun add(favourite: Favourite) {
         dao.insert(favourite.toEntity())
     }

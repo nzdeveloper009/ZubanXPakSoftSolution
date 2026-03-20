@@ -28,6 +28,8 @@ class DictionaryApiServiceImpl(
         const val BASE_URL = "https://api.dictionaryapi.dev/api/v2/entries"
 
         fun parseFirstEntry(raw: String, json: Json = Json { ignoreUnknownKeys = true }): DictionaryResponseDto? {
+            // The API returns an error object (not an array) for unknown words/phrases
+            if (!raw.trimStart().startsWith('[')) return null
             val list = json.decodeFromString(ListSerializer(DictionaryResponseDto.serializer()), raw)
             return list.firstOrNull()
         }

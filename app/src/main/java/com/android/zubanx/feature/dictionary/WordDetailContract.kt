@@ -11,7 +11,8 @@ object WordDetailContract {
         data class Loaded(
             val entry: DictionaryEntry,
             val aiInsight: String? = null,
-            val aiLoading: Boolean = false
+            val aiLoading: Boolean = false,
+            val isFavourite: Boolean = false
         ) : State
         data class Error(val message: String) : State
     }
@@ -21,11 +22,13 @@ object WordDetailContract {
         data class EnrichWithAi(val expert: String) : Event()
         data object SpeakWord : Event()
         data object CopyDefinition : Event()
+        data object ToggleFavourite : Event()
     }
 
     sealed class Effect : UiEffect {
         data class ShowToast(val message: String) : Effect()
         data class SpeakText(val text: String, val langCode: String) : Effect()
         data class CopyToClipboard(val text: String) : Effect()
+        data object ShowFavourited : Effect()
     }
 }

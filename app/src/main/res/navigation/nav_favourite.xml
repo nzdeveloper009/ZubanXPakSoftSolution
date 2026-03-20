@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_favourite"
-    android:label="Favourite">
-    <!-- Fragments added in Plan 8: Favourites, Settings & Premium -->
+    app:startDestination="@id/favouriteFragment">
+
+    <fragment
+        android:id="@+id/favouriteFragment"
+        android:name="com.android.zubanx.feature.favourite.FavouriteFragment"
+        android:label="Favourites" />
+
 </navigation>
