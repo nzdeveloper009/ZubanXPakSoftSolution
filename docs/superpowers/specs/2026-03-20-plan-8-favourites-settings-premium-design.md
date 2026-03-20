@@ -116,8 +116,10 @@ override fun setupViews() {
 ## Section 2: BillingManager
 
 File: `billing/BillingManager.kt`
+
+Constructor: `class BillingManager(context: Context)` — Koin resolves `Context` from `androidContext()`.
 DI: `singleOf(::BillingManager)` in new `core/di/BillingModule.kt`.
-Connected once from `ZubanApp.onCreate()`.
+`ZubanApp.onCreate()`: add `billingModule` to the `modules(...)` list in `initKoin { }`, then call `get<BillingManager>().connect()`.
 
 ### 2.1 BillingState
 
@@ -277,7 +279,7 @@ Receives a `Favourite` via `Bundle` arguments (the `Favourite` model implements 
 - All three actions are handled locally inside the BottomSheet — no callback to parent needed
 - `TtsManager` injected via `by inject()` (Koin)
 
-### 3.6 Item Layout
+### 3.5 Item Layout
 
 `item_favourite.xml` — `MaterialCardView` root:
 - `tvSourceText`, `tvTranslatedText`, `tvLangPair` (e.g., "EN → UR")
@@ -402,7 +404,7 @@ object PremiumContract {
 - In `init`: collects `billingState` flow and maps to `State`:
   - `BillingState.Loading` → `isLoading = true`
   - `BillingState.Ready(plans)` → `isLoading = false, plans = plans, selectedPlan = plans.firstOrNull { it.planType == WEEKLY }`
-  - `BillingState.Purchased` → `isPremium = true` + sends `Effect.NavigateBack`
+  - `BillingState.Purchased` → calls `appPreferences.setIsPremium(true)` in a coroutine, sets `isPremium = true` in state, sends `Effect.NavigateBack`
   - `BillingState.Error(msg)` → `errorMessage = msg`
 - Collects `appPreferences.isPremium` to reflect existing premium state.
 - `Purchase` event → sends `Effect.LaunchBillingFlow(selectedPlan!!)`.
@@ -507,6 +509,7 @@ get<BillingManager>().connect()
 | Modify | `FavouriteDao.kt` — add `getAllByCategory` |
 | Modify | `Favourite.kt` — add `category` |
 | Modify | `FavouriteRepository.kt` + impl — add `getByCategory` |
+| Modify | `FavouriteMapper.kt` — map new `category` field in `toDomain()` and `toEntity()` |
 | Modify | `AppPreferences.kt` + impl — add `autoSpeak`, `floatingOverlay` |
 | Modify | `ZubanDatabase.kt` — v2 + migration |
 | Modify | `DatabaseModule.kt` — add migration |
@@ -529,6 +532,7 @@ get<BillingManager>().connect()
 | Create | `feature/favourite/FavouriteContract.kt` |
 | Create | `feature/favourite/FavouriteViewModel.kt` |
 | Create | `feature/favourite/FavouriteFragment.kt` |
+| Create | `feature/favourite/FavouriteAdapter.kt` — `ListAdapter<Favourite, VH>` with `DiffUtil.ItemCallback` |
 | Create | `feature/favourite/FavouriteDetailBottomSheet.kt` |
 | Create | `feature/settings/SettingsContract.kt` |
 | Create | `feature/settings/SettingsViewModel.kt` |
