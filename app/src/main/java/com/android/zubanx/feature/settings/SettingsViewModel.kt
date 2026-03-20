@@ -2,6 +2,7 @@ package com.android.zubanx.feature.settings
 
 import androidx.lifecycle.viewModelScope
 import com.android.zubanx.BuildConfig
+import com.android.zubanx.R
 import com.android.zubanx.core.mvi.BaseViewModel
 import com.android.zubanx.data.local.datastore.AppPreferences
 import kotlinx.coroutines.flow.combine
@@ -37,12 +38,10 @@ class SettingsViewModel(
 
     override fun onEvent(event: SettingsContract.Event) {
         when (event) {
-            // TODO(Task 7): Replace 0 with R.id.action_settings_to_premium once nav XML is wired
             SettingsContract.Event.NavigateToPremium ->
-                sendEffect(SettingsContract.Effect.Navigate(0))
-            // TODO(Task 7): Replace 0 with R.id.action_settings_to_favourite once nav XML is wired
+                sendEffect(SettingsContract.Effect.Navigate(R.id.action_settings_to_premium))
             SettingsContract.Event.NavigateToFavourites ->
-                sendEffect(SettingsContract.Effect.Navigate(0))
+                sendEffect(SettingsContract.Effect.Navigate(R.id.action_settings_to_favourite))
             SettingsContract.Event.NavigateToHistory ->
                 sendEffect(SettingsContract.Effect.ShowToast("History coming soon"))
             SettingsContract.Event.NavigateToAiTone ->

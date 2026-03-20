@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_settings"
-    android:label="Settings">
-    <!-- Fragments added in Plan 8: Favourites, Settings & Premium -->
+    app:startDestination="@id/settingsFragment">
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.android.zubanx.feature.settings.SettingsFragment"
+        android:label="Settings">
+
+        <action
+            android:id="@+id/action_settings_to_premium"
+            app:destination="@id/nav_premium" />
+
+        <action
+            android:id="@+id/action_settings_to_favourite"
+            app:destination="@id/nav_favourite" />
+
+    </fragment>
+
 </navigation>
