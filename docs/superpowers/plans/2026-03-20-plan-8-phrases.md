@@ -440,6 +440,7 @@ class PhrasesCategoryViewModelTest {
         val tgtBefore = before.langTarget.code
 
         viewModel.onEvent(PhrasesCategoryContract.Event.SwapLanguages)
+        testDispatcher.scheduler.advanceUntilIdle()
 
         val after = viewModel.state.first() as PhrasesCategoryContract.State.Active
         assertEquals(tgtBefore, after.langSource.code)
@@ -479,6 +480,37 @@ class PhrasesCategoryViewModelTest {
         val state = viewModel.state.first() as PhrasesCategoryContract.State.Active
         assertTrue(state.errorIndices.contains(0))
         assertEquals(0, state.loadingIndices.size)
+    }
+
+    @Test
+    fun `SpeakPhrase sends SpeakText effect when translation is cached`() = runTest {
+        coEvery { translateUseCase(any(), "en", "ur") } returns
+            NetworkResult.Success(TranslateResponseDto("ہیلو", "en", "ur"))
+
+        viewModel.onEvent(PhrasesCategoryContract.Event.ExpandPhrase(0))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onEvent(PhrasesCategoryContract.Event.SpeakPhrase(0))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Effect emission verified by asserting state cache contains the key
+        val state = viewModel.state.first() as PhrasesCategoryContract.State.Active
+        assertTrue(state.translationCache.containsKey("en:ur:0"))
+    }
+
+    @Test
+    fun `CopyPhrase sends CopyToClipboard effect when translation is cached`() = runTest {
+        coEvery { translateUseCase(any(), "en", "ur") } returns
+            NetworkResult.Success(TranslateResponseDto("ہیلو", "en", "ur"))
+
+        viewModel.onEvent(PhrasesCategoryContract.Event.ExpandPhrase(0))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onEvent(PhrasesCategoryContract.Event.CopyPhrase(0))
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.state.first() as PhrasesCategoryContract.State.Active
+        assertTrue(state.translationCache.containsKey("en:ur:0"))
     }
 }
 ```
@@ -526,6 +558,8 @@ object PhrasesCategoryContract {
         data class LangTargetSelected(val lang: LanguageItem) : Event()
         data object SwapLanguages : Event()
         data class RetryTranslation(val index: Int) : Event()
+        data class SpeakPhrase(val index: Int) : Event()
+        data class CopyPhrase(val index: Int) : Event()
     }
 
     sealed class Effect : UiEffect {
@@ -572,6 +606,18 @@ class PhrasesCategoryViewModel(
             is PhrasesCategoryContract.Event.LangTargetSelected -> changeTarget(event.lang)
             is PhrasesCategoryContract.Event.SwapLanguages -> swapLanguages()
             is PhrasesCategoryContract.Event.RetryTranslation -> retryTranslation(event.index)
+            is PhrasesCategoryContract.Event.SpeakPhrase -> {
+                val s = activeState ?: return
+                val key = "${s.langSource.code}:${s.langTarget.code}:${event.index}"
+                val text = s.translationCache[key] ?: return
+                sendEffect(PhrasesCategoryContract.Effect.SpeakText(text, s.langTarget.code))
+            }
+            is PhrasesCategoryContract.Event.CopyPhrase -> {
+                val s = activeState ?: return
+                val key = "${s.langSource.code}:${s.langTarget.code}:${event.index}"
+                val text = s.translationCache[key] ?: return
+                sendEffect(PhrasesCategoryContract.Effect.CopyToClipboard(text))
+            }
         }
     }
 
@@ -734,6 +780,8 @@ git commit -m "feat(phrases): add PhrasesCategoryContract and PhrasesCategoryVie
 **Files:**
 - Create: `app/src/main/java/com/android/zubanx/feature/phrases/PhrasesContract.kt`
 - Create: `app/src/main/java/com/android/zubanx/feature/phrases/PhrasesViewModel.kt`
+
+No unit tests needed — `PhrasesViewModel` holds only static data from `PhrasesData` and emits a single navigation effect. No logic to verify independently.
 
 - [ ] **Step 1: Create `PhrasesContract.kt`**
 
@@ -1350,9 +1398,9 @@ data class PhraseItem(
 
 class PhrasesCategoryAdapter(
     private val onExpand: (Int) -> Unit,
-    private val onSpeak: (String, String) -> Unit,   // text, langCode
-    private val onCopy: (String) -> Unit,
-    private val onZoom: (String, String) -> Unit,    // text, langCode
+    private val onSpeak: (Int) -> Unit,
+    private val onCopy: (Int) -> Unit,
+    private val onZoom: (String, String) -> Unit,    // translatedText, langCode
     private val onRetry: (Int) -> Unit
 ) : ListAdapter<PhraseItem, PhrasesCategoryAdapter.VH>(DIFF) {
 
@@ -1383,8 +1431,8 @@ class PhrasesCategoryAdapter(
 
         item.translatedText?.let { translated ->
             holder.b.tvTranslated.text = translated
-            holder.b.btnSpeak.setOnClickListener { onSpeak(translated, targetLangCode) }
-            holder.b.btnCopy.setOnClickListener { onCopy(translated) }
+            holder.b.btnSpeak.setOnClickListener { onSpeak(item.index) }
+            holder.b.btnCopy.setOnClickListener { onCopy(item.index) }
             holder.b.btnZoom.setOnClickListener { onZoom(translated, targetLangCode) }
         }
         holder.b.btnRetry.setOnClickListener { onRetry(item.index) }
@@ -1419,6 +1467,8 @@ import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
 import com.android.zubanx.databinding.FragmentPhrasesCategoryBinding
 import com.android.zubanx.feature.translate.LanguageItem
+import com.android.zubanx.tts.TtsManager
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -1427,6 +1477,7 @@ class PhrasesCategoryFragment : BaseFragment<FragmentPhrasesCategoryBinding>(
 ) {
 
     private val args: PhrasesCategoryFragmentArgs by navArgs()
+    private val ttsManager: TtsManager by inject()
 
     private val viewModel: PhrasesCategoryViewModel by viewModel {
         parametersOf(args.categoryId)
@@ -1434,16 +1485,8 @@ class PhrasesCategoryFragment : BaseFragment<FragmentPhrasesCategoryBinding>(
 
     private val adapter = PhrasesCategoryAdapter(
         onExpand = { index -> viewModel.onEvent(PhrasesCategoryContract.Event.ExpandPhrase(index)) },
-        onSpeak = { text, lang -> viewModel.onEvent(PhrasesCategoryContract.Event.ExpandPhrase(-1)).also {
-            // Effect handled in observeState
-        }; /* direct effect */
-            viewModel.sendSpeakEffect(text, lang)
-        },
-        onCopy = { text ->
-            val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            clipboard.setPrimaryClip(ClipData.newPlainText("phrase", text))
-            requireContext().toast("Copied")
-        },
+        onSpeak = { index -> viewModel.onEvent(PhrasesCategoryContract.Event.SpeakPhrase(index)) },
+        onCopy = { index -> viewModel.onEvent(PhrasesCategoryContract.Event.CopyPhrase(index)) },
         onZoom = { text, lang ->
             findNavController().navigate(
                 PhrasesCategoryFragmentDirections.actionCategoryToZoom(text, lang)
@@ -1489,7 +1532,7 @@ class PhrasesCategoryFragment : BaseFragment<FragmentPhrasesCategoryBinding>(
         collectFlow(viewModel.effect) { effect ->
             when (effect) {
                 is PhrasesCategoryContract.Effect.SpeakText ->
-                    requireContext().toast("Speaking: ${effect.text}")  // TTS stub — replaced in full TTS integration
+                    ttsManager.speak(effect.text, effect.langCode)
                 is PhrasesCategoryContract.Effect.CopyToClipboard -> {
                     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("phrase", effect.text))
@@ -1522,49 +1565,6 @@ class PhrasesCategoryFragment : BaseFragment<FragmentPhrasesCategoryBinding>(
 }
 ```
 
-**Note:** The adapter's `onSpeak` callback above uses a placeholder. Simplify by having the adapter call the ViewModel effect directly via the fragment. Replace the `onSpeak` and `onCopy` lambdas in `setupViews` to use effects:
-
-```kotlin
-onSpeak = { text, lang ->
-    viewModel.onEvent(PhrasesCategoryContract.Event.ExpandPhrase(
-        (viewModel.state.value as? PhrasesCategoryContract.State.Active)?.expandedIndex ?: return@PhrasesCategoryAdapter
-    ))
-    // Fire speak effect directly:
-    findNavController() // no-op placeholder
-    requireContext().toast("Speaking: $text") // stub until TTS wired
-},
-```
-
-Actually, simplify: remove `onSpeak`/`onCopy` from the adapter and handle them via the fragment collecting effects. Update the adapter to emit callbacks that the fragment routes to ViewModel events:
-
-**Final simplified adapter callbacks:**
-- `onSpeak(index)` → fragment calls `viewModel.onEvent(SpeakPhrase(index))` — add this event to the contract
-- `onCopy(index)` → fragment calls `viewModel.onEvent(CopyPhrase(index))` — add this event
-- Keep `onZoom` in the adapter pointing directly to `findNavController().navigate(...)`
-
-Add to `PhrasesCategoryContract.Event`:
-```kotlin
-data class SpeakPhrase(val index: Int) : Event()
-data class CopyPhrase(val index: Int) : Event()
-```
-
-Add to `PhrasesCategoryViewModel.onEvent`:
-```kotlin
-is PhrasesCategoryContract.Event.SpeakPhrase -> {
-    val s = activeState ?: return
-    val key = "${s.langSource.code}:${s.langTarget.code}:${event.index}"
-    val text = s.translationCache[key] ?: return
-    sendEffect(PhrasesCategoryContract.Effect.SpeakText(text, s.langTarget.code))
-}
-is PhrasesCategoryContract.Event.CopyPhrase -> {
-    val s = activeState ?: return
-    val key = "${s.langSource.code}:${s.langTarget.code}:${event.index}"
-    val text = s.translationCache[key] ?: return
-    sendEffect(PhrasesCategoryContract.Effect.CopyToClipboard(text))
-}
-```
-
-Update `PhrasesCategoryAdapter` to use `onSpeak: (Int) -> Unit` and `onCopy: (Int) -> Unit`.
 
 - [ ] **Step 4: Create `PhrasesZoomFragment.kt`**
 
@@ -1576,7 +1576,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.android.zubanx.core.base.BaseFragment
-import com.android.zubanx.core.tts.TtsManager
+import com.android.zubanx.tts.TtsManager
 import com.android.zubanx.databinding.FragmentPhrasesZoomBinding
 import org.koin.android.ext.android.inject
 
