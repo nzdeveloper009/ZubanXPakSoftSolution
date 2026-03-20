@@ -2,6 +2,7 @@ package com.android.zubanx.app
 
 import android.app.Application
 import com.android.zubanx.BuildConfig
+import com.android.zubanx.core.di.billingModule
 import com.android.zubanx.core.di.databaseModule
 import com.android.zubanx.core.di.dataStoreModule
 import com.android.zubanx.core.di.mlKitModule
@@ -46,7 +47,8 @@ class ZubanApp : Application() {
                 repositoryModule,
                 useCaseModule,
                 viewModelModule,
-                ttsModule
+                ttsModule,
+                billingModule
             )
         }
     }
