@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "352702654962",
+    "project_id": "zubanx-ee6b4",
+    "storage_bucket": "zubanx-ee6b4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352702654962:android:465465f8b0f2a07c90636b",
+        "android_client_info": {
+          "package_name": "com.android.zubanx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSx5udn3_OATmNxLSBI5wm4OIrJ8pWuYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
