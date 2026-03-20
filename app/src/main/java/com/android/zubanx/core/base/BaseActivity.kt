@@ -1,9 +1,11 @@
 package com.android.zubanx.core.base
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.viewbinding.ViewBinding
 
 abstract class BaseActivity<T : ViewBinding>(
@@ -19,6 +21,12 @@ abstract class BaseActivity<T : ViewBinding>(
         WindowCompat.setDecorFitsSystemWindows(window, false)
         _binding = bindingFactory(layoutInflater)
         setContentView(binding.root)
+        // Dark icons on light background, light icons on dark background
+        val isLightMode = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) != Configuration.UI_MODE_NIGHT_YES
+        WindowInsetsControllerCompat(window, binding.root).apply {
+            isAppearanceLightStatusBars = isLightMode
+            isAppearanceLightNavigationBars = isLightMode
+        }
     }
 
     override fun onDestroy() {
