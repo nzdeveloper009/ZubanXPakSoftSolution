@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.utils.collectFlow
@@ -13,8 +14,9 @@ import org.koin.android.ext.android.inject
 import com.android.zubanx.databinding.FragmentWordDetailBinding
 import com.android.zubanx.domain.model.DictionaryEntry
 import com.android.zubanx.domain.repository.DictionaryRepository
-import kotlinx.coroutines.runBlocking
-import org.koin.android.ext.android.inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordDetailBinding::inflate) {
@@ -25,10 +27,12 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
     private val ttsManager: TtsManager by inject()
 
     override fun setupViews() {
-        val entry = runBlocking { repository.getCached(args.word, args.language) }
-            ?: DictionaryEntry(word = args.word, language = args.language, definition = "", timestamp = 0L)
-
-        viewModel.onEvent(WordDetailContract.Event.Load(entry))
+        lifecycleScope.launch {
+            val entry = withContext(Dispatchers.IO) {
+                repository.getCached(args.word, args.language)
+            } ?: DictionaryEntry(word = args.word, language = args.language, definition = "", timestamp = 0L)
+            viewModel.onEvent(WordDetailContract.Event.Load(entry))
+        }
 
         binding.btnDetailSpeak.setOnClickListener {
             viewModel.onEvent(WordDetailContract.Event.SpeakWord)

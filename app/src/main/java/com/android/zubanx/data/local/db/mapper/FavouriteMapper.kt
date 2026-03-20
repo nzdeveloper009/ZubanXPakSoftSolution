@@ -5,10 +5,12 @@ import com.android.zubanx.domain.model.Favourite
 
 fun FavouriteEntity.toDomain(): Favourite = Favourite(
     id = id, sourceText = sourceText, translatedText = translatedText,
-    sourceLang = sourceLang, targetLang = targetLang, timestamp = timestamp
+    sourceLang = sourceLang, targetLang = targetLang, timestamp = timestamp,
+    category = category
 )
 
 fun Favourite.toEntity(): FavouriteEntity = FavouriteEntity(
     id = id, sourceText = sourceText, translatedText = translatedText,
-    sourceLang = sourceLang, targetLang = targetLang, timestamp = timestamp
+    sourceLang = sourceLang, targetLang = targetLang, timestamp = timestamp,
+    category = category
 )

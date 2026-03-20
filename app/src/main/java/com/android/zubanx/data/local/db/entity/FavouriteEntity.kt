@@ -10,5 +10,11 @@ data class FavouriteEntity(
     val translatedText: String,
     val sourceLang: String,
     val targetLang: String,
-    val timestamp: Long
+    val timestamp: Long,
+    val category: String = "translate"
 )
+
+object FavouriteCategory {
+    const val TRANSLATE = "translate"
+    const val DICTIONARY = "dictionary"
+}
