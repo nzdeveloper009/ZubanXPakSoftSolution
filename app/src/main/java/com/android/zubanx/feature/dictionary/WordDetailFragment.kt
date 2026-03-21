@@ -60,6 +60,7 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
         collectFlow(viewModel.effect) { effect ->
             when (effect) {
                 is WordDetailContract.Effect.ShowToast -> requireContext().toast(getString(effect.messageResId))
+                is WordDetailContract.Effect.ShowError -> requireContext().toast(effect.message)
                 is WordDetailContract.Effect.SpeakText -> ttsManager.speak(effect.text, args.language)
                 is WordDetailContract.Effect.CopyToClipboard -> {
                     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

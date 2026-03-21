@@ -63,7 +63,7 @@ class WordDetailViewModel(
                 }
                 is NetworkResult.Error -> {
                     setState { (this as? WordDetailContract.State.Loaded)?.copy(aiLoading = false) ?: this }
-                    sendEffect(WordDetailContract.Effect.ShowToast(result.message))
+                    sendEffect(WordDetailContract.Effect.ShowError(result.message))
                 }
             }
         }

@@ -28,6 +28,7 @@ object WordDetailContract {
 
     sealed class Effect : UiEffect {
         data class ShowToast(@StringRes val messageResId: Int) : Effect()
+        data class ShowError(val message: String) : Effect()
         data class SpeakText(val text: String, val langCode: String) : Effect()
         data class CopyToClipboard(val text: String) : Effect()
         data object ShowFavourited : Effect()
