@@ -6,6 +6,7 @@ import com.android.zubanx.data.remote.dto.TranslateResponseDto
 import com.android.zubanx.domain.usecase.phrases.TranslatePhraseUseCase
 import com.android.zubanx.feature.phrases.data.PhrasesData
 import io.mockk.coEvery
+import io.mockk.coJustRun
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -69,6 +70,10 @@ class PhrasesCategoryViewModelTest {
 
     @Test
     fun `SwapLanguages reverses source and target`() = runTest {
+        coJustRun { appPreferences.setSourceLang(any()) }
+        coJustRun { appPreferences.setTargetLang(any()) }
+        coEvery { translateUseCase(any(), any(), any()) } returns NetworkResult.Error("stub")
+
         val before = viewModel.state.first() as PhrasesCategoryContract.State.Active
         val srcBefore = before.langSource.code
         val tgtBefore = before.langTarget.code
