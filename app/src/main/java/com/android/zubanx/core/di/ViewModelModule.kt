@@ -11,6 +11,7 @@ import com.android.zubanx.feature.conversation.ConversationViewModel
 import com.android.zubanx.feature.translate.TranslateViewModel
 import com.android.zubanx.feature.phrases.PhrasesViewModel
 import com.android.zubanx.feature.phrases.PhrasesCategoryViewModel
+import com.android.zubanx.feature.language.LanguageViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -27,4 +28,5 @@ val viewModelModule = module {
     viewModelOf(::PremiumViewModel)
     viewModelOf(::PhrasesViewModel)
     viewModel { params -> PhrasesCategoryViewModel(get(), get(), params.get()) }
+    viewModelOf(::LanguageViewModel)
 }
