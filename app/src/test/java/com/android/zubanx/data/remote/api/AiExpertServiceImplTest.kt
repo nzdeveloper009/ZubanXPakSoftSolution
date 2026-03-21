@@ -45,4 +45,16 @@ class AiExpertServiceImplTest {
         val result = service.ask("GPT", "Translate: Hello")
         assertTrue(result is NetworkResult.Error)
     }
+
+    @Test
+    fun `buildTranslationPrompt with casual tone contains casual instruction`() {
+        val prompt = AiExpertServiceImpl.buildTranslationPrompt("Hello", "en", "es", "casual")
+        assertTrue(prompt.contains("friendly"))
+    }
+
+    @Test
+    fun `buildTranslationPrompt with original tone uses natural language instruction`() {
+        val prompt = AiExpertServiceImpl.buildTranslationPrompt("Hello", "en", "es", "original")
+        assertTrue(prompt.contains("natural"))
+    }
 }

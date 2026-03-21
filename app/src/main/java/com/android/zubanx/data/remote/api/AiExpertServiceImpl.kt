@@ -109,8 +109,22 @@ class AiExpertServiceImpl(
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
         private const val CLAUDE_URL = "https://api.anthropic.com/v1/messages"
 
-        fun buildTranslationPrompt(text: String, sourceLang: String, targetLang: String): String =
-            "Translate the following text from $sourceLang to $targetLang. " +
-            "Reply with only the translated text, no explanations or extra content.\n\n$text"
+        fun buildTranslationPrompt(
+            text: String,
+            sourceLang: String,
+            targetLang: String,
+            tone: String = "original"
+        ): String {
+            val toneInstruction = when (tone) {
+                "casual"       -> "Use a friendly and approachable tone."
+                "professional" -> "Use a neutral, direct, professional tone."
+                "education"    -> "Provide clear and instructional content."
+                "friendly"     -> "Adopt a warm and welcoming tone."
+                "funny"        -> "Add humor or playfulness to the translated text."
+                else           -> "Use natural and authentic language."
+            }
+            return "Translate the following text from $sourceLang to $targetLang. $toneInstruction " +
+                   "Reply with only the translated text, no explanations.\n\n$text"
+        }
     }
 }

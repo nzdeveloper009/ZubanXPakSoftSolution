@@ -25,14 +25,15 @@ class TranslateUseCase(
         text: String,
         sourceLang: String,
         targetLang: String,
-        expert: String
+        expert: String,
+        aiTone: String = "original"
     ): NetworkResult<TranslateResponseDto> {
         if (text.isBlank()) return NetworkResult.Error("Text must not be blank")
 
         val result = if (expert == "DEFAULT") {
             translateApiService.translate(text, sourceLang, targetLang)
         } else {
-            val prompt = AiExpertServiceImpl.buildTranslationPrompt(text, sourceLang, targetLang)
+            val prompt = AiExpertServiceImpl.buildTranslationPrompt(text, sourceLang, targetLang, aiTone)
             when (val aiResult = aiExpertService.ask(expert, prompt)) {
                 is NetworkResult.Success -> NetworkResult.Success(
                     TranslateResponseDto(
