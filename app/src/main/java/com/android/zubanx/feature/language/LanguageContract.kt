@@ -6,7 +6,6 @@ import com.android.zubanx.core.mvi.UiState
 
 object LanguageContract {
     data class State(
-        val languages: List<AppLanguage> = AppLanguage.ALL,
         val selectedCode: String = "en"
     ) : UiState
 

@@ -42,7 +42,6 @@ class TranslateViewModel(
     init {
         viewModelScope.launch {
             currentExpert = appPreferences.selectedExpert.first()
-            currentAiTone = appPreferences.aiTone.first()
             val sourceLangCode = appPreferences.sourceLang.first()
             val targetLangCode = appPreferences.targetLang.first()
             currentSourceLang = if (sourceLangCode == "auto") LanguageItem.DETECT
@@ -78,6 +77,9 @@ class TranslateViewModel(
         }
         viewModelScope.launch {
             appPreferences.selectedExpert.collect { expert -> currentExpert = expert }
+        }
+        viewModelScope.launch {
+            appPreferences.aiTone.collect { tone -> currentAiTone = tone }
         }
     }
 
