@@ -45,7 +45,7 @@ class LearnFragment : BaseFragment<FragmentLearnBinding>(FragmentLearnBinding::i
         sectionAdapter.submitList(sections)
     }
 
-    inner class SectionAdapter : ListAdapter<LearnSection, SectionAdapter.VH>(DIFF) {
+    class SectionAdapter : ListAdapter<LearnSection, SectionAdapter.VH>(DIFF) {
 
         inner class VH(val b: ItemLearnSectionBinding) : RecyclerView.ViewHolder(b.root)
 
