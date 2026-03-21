@@ -4,12 +4,12 @@
 
     <item
         android:id="@+id/action_idioms"
-        android:title="Idioms"
+        android:title="@string/menu_idioms"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_stories"
-        android:title="Stories"
+        android:title="@string/menu_stories"
         app:showAsAction="never" />
 
 </menu>
