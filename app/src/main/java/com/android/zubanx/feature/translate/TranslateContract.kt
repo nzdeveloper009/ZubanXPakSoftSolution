@@ -1,5 +1,6 @@
 package com.android.zubanx.feature.translate
 
+import androidx.annotation.StringRes
 import com.android.zubanx.core.mvi.UiEffect
 import com.android.zubanx.core.mvi.UiEvent
 import com.android.zubanx.core.mvi.UiState
@@ -51,7 +52,7 @@ object TranslateContract {
     }
 
     sealed class Effect : UiEffect {
-        data class ShowToast(val message: String) : Effect()
+        data class ShowToast(@StringRes val messageResId: Int) : Effect()
         data class CopyToClipboard(val text: String) : Effect()
         data class SpeakText(val text: String, val langCode: String) : Effect()
         data class ShareText(val text: String) : Effect()

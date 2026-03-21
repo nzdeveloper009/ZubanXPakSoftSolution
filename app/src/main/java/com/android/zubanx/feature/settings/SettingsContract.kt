@@ -1,5 +1,6 @@
 package com.android.zubanx.feature.settings
 
+import androidx.annotation.StringRes
 import com.android.zubanx.core.mvi.UiEffect
 import com.android.zubanx.core.mvi.UiEvent
 import com.android.zubanx.core.mvi.UiState
@@ -39,7 +40,7 @@ object SettingsContract {
         object LaunchRateUs : Effect()
         object LaunchContactSupport : Effect()
         data class StartFloatingService(val enable: Boolean) : Effect()
-        data class ShowToast(val message: String) : Effect()
+        data class ShowToast(@StringRes val messageResId: Int) : Effect()
         data class ShowAiToneDialog(val currentTone: AiTone) : Effect()
     }
 }

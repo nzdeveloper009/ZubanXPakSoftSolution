@@ -123,7 +123,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
         }
         collectFlow(viewModel.effect) { effect ->
             when (effect) {
-                is TranslateContract.Effect.ShowToast -> requireContext().toast(effect.message)
+                is TranslateContract.Effect.ShowToast -> requireContext().toast(getString(effect.messageResId))
                 is TranslateContract.Effect.CopyToClipboard -> copyToClipboard(effect.text)
                 is TranslateContract.Effect.SpeakText -> ttsManager.speak(effect.text, effect.langCode)
                 is TranslateContract.Effect.ShareText -> shareText(effect.text)
@@ -204,7 +204,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
     private fun launchGoogleMic(sourceCode: String?) {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak Now")
+            putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.mic_speak_now))
             putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, requireContext().packageName)
             if (sourceCode != null && sourceCode != "auto") {
                 val language = sourceCode + "-" + sourceCode.uppercase(Locale.getDefault())
@@ -263,7 +263,7 @@ class TranslateFragment : BaseFragment<FragmentTranslateBinding>(FragmentTransla
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, text)
         }
-        startActivity(Intent.createChooser(intent, "Share translation"))
+        startActivity(Intent.createChooser(intent, getString(R.string.chooser_share_translation)))
     }
 
     private fun currentSourceCode(): String? {

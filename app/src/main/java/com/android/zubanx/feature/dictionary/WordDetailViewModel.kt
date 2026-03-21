@@ -1,6 +1,7 @@
 package com.android.zubanx.feature.dictionary
 
 import androidx.lifecycle.viewModelScope
+import com.android.zubanx.R
 import com.android.zubanx.core.mvi.BaseViewModel
 import com.android.zubanx.core.network.NetworkResult
 import com.android.zubanx.domain.model.DictionaryEntry
@@ -76,6 +77,6 @@ class WordDetailViewModel(
     private fun copyDefinition() {
         val entry = (state.value as? WordDetailContract.State.Loaded)?.entry ?: return
         sendEffect(WordDetailContract.Effect.CopyToClipboard(entry.definition))
-        sendEffect(WordDetailContract.Effect.ShowToast("Definition copied"))
+        sendEffect(WordDetailContract.Effect.ShowToast(R.string.toast_definition_copied))
     }
 }

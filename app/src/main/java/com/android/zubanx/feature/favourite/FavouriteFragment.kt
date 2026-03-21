@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.zubanx.R
 import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
@@ -100,14 +101,14 @@ class FavouriteFragment : BaseFragment<FragmentFavouriteBinding>(FragmentFavouri
                 is FavouriteContract.Effect.CopyToClipboard -> {
                     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("favourite", effect.text))
-                    requireContext().toast("Copied")
+                    requireContext().toast(getString(R.string.toast_copied))
                 }
                 is FavouriteContract.Effect.Share -> {
                     val intent = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
                         putExtra(Intent.EXTRA_TEXT, effect.text)
                     }
-                    startActivity(Intent.createChooser(intent, "Share"))
+                    startActivity(Intent.createChooser(intent, getString(R.string.chooser_share)))
                 }
                 is FavouriteContract.Effect.Speak -> ttsManager.speak(effect.text, effect.lang)
                 is FavouriteContract.Effect.ShowToast -> requireContext().toast(effect.message)
@@ -119,10 +120,10 @@ class FavouriteFragment : BaseFragment<FragmentFavouriteBinding>(FragmentFavouri
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Delete favourite?")
             .setMessage("This item will be removed from your favourites.")
-            .setPositiveButton("Delete") { _, _ ->
+            .setPositiveButton(R.string.btn_delete) { _, _ ->
                 viewModel.onEvent(FavouriteContract.Event.DeleteConfirmed(id))
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(R.string.btn_cancel, null)
             .show()
     }
 }

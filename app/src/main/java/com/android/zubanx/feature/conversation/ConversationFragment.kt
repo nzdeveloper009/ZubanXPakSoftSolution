@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.android.zubanx.R
 import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
@@ -121,7 +122,7 @@ class ConversationFragment : BaseFragment<FragmentConversationBinding>(FragmentC
         val languages = LanguageItem.ALL.filter { it != LanguageItem.DETECT }
         val names = languages.map { it.name }.toTypedArray()
         AlertDialog.Builder(requireContext())
-            .setTitle("Select language")
+            .setTitle(R.string.dialog_select_language)
             .setItems(names) { _, which ->
                 val selected = languages[which]
                 when (speaker) {

@@ -1,6 +1,7 @@
 package com.android.zubanx.feature.translate
 
 import androidx.lifecycle.viewModelScope
+import com.android.zubanx.R
 import com.android.zubanx.core.mvi.BaseViewModel
 import com.android.zubanx.core.network.NetworkResult
 import com.android.zubanx.data.local.datastore.AppPreferences
@@ -186,7 +187,7 @@ class TranslateViewModel(
     private fun copyTranslation() {
         val translated = (state.value as? TranslateContract.State.Success)?.translatedText ?: return
         sendEffect(TranslateContract.Effect.CopyToClipboard(translated))
-        sendEffect(TranslateContract.Effect.ShowToast("Copied to clipboard"))
+        sendEffect(TranslateContract.Effect.ShowToast(R.string.toast_copied_clipboard))
     }
 
     private fun speakTranslation() {
@@ -201,10 +202,10 @@ class TranslateViewModel(
             val existingId = favouriteKeyToId[key]
             if (existingId != null) {
                 deleteFavouriteUseCase(existingId)
-                sendEffect(TranslateContract.Effect.ShowToast("Removed from favourites"))
+                sendEffect(TranslateContract.Effect.ShowToast(R.string.toast_removed_favourites))
             } else {
                 addFavouriteUseCase(translation)
-                sendEffect(TranslateContract.Effect.ShowToast("Added to favourites"))
+                sendEffect(TranslateContract.Effect.ShowToast(R.string.toast_added_favourites))
             }
         }
     }
@@ -247,10 +248,10 @@ class TranslateViewModel(
             val existingId = favouriteKeyToId[key]
             if (existingId != null) {
                 deleteFavouriteUseCase(existingId)
-                sendEffect(TranslateContract.Effect.ShowToast("Removed from favourites"))
+                sendEffect(TranslateContract.Effect.ShowToast(R.string.toast_removed_favourites))
             } else {
                 addFavouriteUseCase(translation)
-                sendEffect(TranslateContract.Effect.ShowToast("Added to favourites"))
+                sendEffect(TranslateContract.Effect.ShowToast(R.string.toast_added_favourites))
             }
         }
     }
@@ -261,6 +262,6 @@ class TranslateViewModel(
 
     private fun copyHistoryItem(translation: Translation) {
         sendEffect(TranslateContract.Effect.CopyToClipboard(translation.translatedText))
-        sendEffect(TranslateContract.Effect.ShowToast("Copied to clipboard"))
+        sendEffect(TranslateContract.Effect.ShowToast(R.string.toast_copied_clipboard))
     }
 }

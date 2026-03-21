@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="Upgrade to Premium"
+                    android:text="@string/settings_upgrade_premium"
                     android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                 <ImageView
@@ -85,7 +85,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
-                        android:text="History"
+                        android:text="@string/settings_history"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
                 </LinearLayout>
 
@@ -110,7 +110,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
-                        android:text="Favourites"
+                        android:text="@string/settings_favourites"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
                 </LinearLayout>
 
@@ -135,7 +135,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
-                        android:text="AI Tone"
+                        android:text="@string/settings_ai_tone"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                     <TextView
@@ -183,7 +183,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
-                        android:text="Translate Offline"
+                        android:text="@string/settings_translate_offline"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                     <com.google.android.material.materialswitch.MaterialSwitch
@@ -211,7 +211,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
-                        android:text="Floating Icon"
+                        android:text="@string/settings_floating_icon"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                     <com.google.android.material.materialswitch.MaterialSwitch
@@ -239,7 +239,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
-                        android:text="Auto Speak"
+                        android:text="@string/settings_auto_speak"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                     <com.google.android.material.materialswitch.MaterialSwitch
@@ -284,7 +284,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Language"
+                        android:text="@string/settings_language"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
                 </LinearLayout>
 
@@ -307,7 +307,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Terms of Service"
+                        android:text="@string/settings_terms"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
                 </LinearLayout>
 
@@ -330,7 +330,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Privacy Policy"
+                        android:text="@string/settings_privacy"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
                 </LinearLayout>
 
@@ -353,7 +353,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Rate Us"
+                        android:text="@string/settings_rate_us"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
                 </LinearLayout>
 
@@ -376,7 +376,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Share App"
+                        android:text="@string/settings_share_app"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
                 </LinearLayout>
 
@@ -399,7 +399,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Customer Support"
+                        android:text="@string/settings_support"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
                 </LinearLayout>
 

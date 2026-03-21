@@ -59,13 +59,13 @@ class WordDetailFragment : BaseFragment<FragmentWordDetailBinding>(FragmentWordD
         }
         collectFlow(viewModel.effect) { effect ->
             when (effect) {
-                is WordDetailContract.Effect.ShowToast -> requireContext().toast(effect.message)
+                is WordDetailContract.Effect.ShowToast -> requireContext().toast(getString(effect.messageResId))
                 is WordDetailContract.Effect.SpeakText -> ttsManager.speak(effect.text, args.language)
                 is WordDetailContract.Effect.CopyToClipboard -> {
                     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("definition", effect.text))
                 }
-                is WordDetailContract.Effect.ShowFavourited -> requireContext().toast("Added to favourites")
+                is WordDetailContract.Effect.ShowFavourited -> requireContext().toast(getString(R.string.toast_added_favourites))
             }
         }
     }

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.android.zubanx.R
 import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.navigation.safeNavigate
 import com.android.zubanx.core.utils.collectFlow
@@ -85,7 +86,7 @@ class DictionaryFragment : BaseFragment<FragmentDictionaryBinding>(FragmentDicti
             val def = binding.tvDefinition.text?.toString() ?: return@setOnClickListener
             val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             clipboard.setPrimaryClip(ClipData.newPlainText("definition", def))
-            requireContext().toast("Copied")
+            requireContext().toast(getString(R.string.toast_copied))
         }
         binding.btnViewDetail.setOnClickListener {
             val entry = (viewModel.state.value as? DictionaryContract.State.Success)?.entry ?: return@setOnClickListener

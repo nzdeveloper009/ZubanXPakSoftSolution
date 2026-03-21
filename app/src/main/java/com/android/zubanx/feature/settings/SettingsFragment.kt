@@ -6,6 +6,7 @@ import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.android.zubanx.BuildConfig
+import com.android.zubanx.R
 import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
@@ -64,7 +65,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsB
 
     override fun observeState() {
         collectFlow(viewModel.state) { state ->
-            binding.tvPremiumStatus.text = if (state.isPremium) "Premium Active ✓" else "Upgrade to Premium"
+            binding.tvPremiumStatus.text = if (state.isPremium) getString(R.string.settings_premium_active) else getString(R.string.settings_upgrade_premium)
             binding.tvAiTone.text = state.aiTone.label
             binding.tvVersion.text = "v${state.appVersion}"
 
@@ -105,10 +106,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsB
                         try {
                             findNavController().navigate(effect.actionId)
                         } catch (e: Exception) {
-                            requireContext().toast("Navigation unavailable")
+                            requireContext().toast(getString(R.string.toast_nav_unavailable))
                         }
                     } else {
-                        requireContext().toast("Coming soon")
+                        requireContext().toast(getString(R.string.toast_coming_soon))
                     }
                 }
                 is SettingsContract.Effect.OpenUrl -> {
@@ -122,7 +123,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsB
                             "Check out ZubanX: https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}"
                         )
                     }
-                    startActivity(Intent.createChooser(intent, "Share ZubanX"))
+                    startActivity(Intent.createChooser(intent, getString(R.string.chooser_share_app)))
                 }
                 SettingsContract.Effect.LaunchRateUs -> {
                     try {
@@ -152,18 +153,18 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsB
                         requireContext().stopService(serviceIntent)
                     }
                 }
-                is SettingsContract.Effect.ShowToast -> requireContext().toast(effect.message)
+                is SettingsContract.Effect.ShowToast -> requireContext().toast(getString(effect.messageResId))
                 is SettingsContract.Effect.ShowAiToneDialog -> {
                     val tones = AiTone.entries.toTypedArray()
                     val labels = tones.map { "${it.label} — ${it.description}" }.toTypedArray()
                     val currentIndex = tones.indexOf(effect.currentTone).coerceAtLeast(0)
                     MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("AI Tone")
+                        .setTitle(R.string.settings_ai_tone_dialog_title)
                         .setSingleChoiceItems(labels, currentIndex) { dialog, which ->
                             viewModel.onEvent(SettingsContract.Event.SetAiTone(tones[which]))
                             dialog.dismiss()
                         }
-                        .setNegativeButton("Cancel", null)
+                        .setNegativeButton(R.string.btn_cancel, null)
                         .show()
                 }
             }

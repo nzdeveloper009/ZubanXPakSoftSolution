@@ -13,7 +13,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Language"
+            app:title="@string/screen_language"
             app:navigationIcon="@drawable/ic_expand_more"
             app:menu="@menu/menu_language" />
 

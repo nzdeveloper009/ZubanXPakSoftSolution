@@ -100,7 +100,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Definition"
+                    android:text="@string/word_definition"
                     android:textSize="12sp"
                     android:textAllCaps="true"
                     android:letterSpacing="0.1"
@@ -137,7 +137,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Examples"
+                    android:text="@string/word_examples"
                     android:textSize="12sp"
                     android:textAllCaps="true"
                     android:letterSpacing="0.1"
@@ -183,7 +183,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="AI Insight"
+                        android:text="@string/word_ai_insight"
                         android:textSize="12sp"
                         android:textAllCaps="true"
                         android:letterSpacing="0.1"
@@ -195,7 +195,7 @@
                         style="@style/Widget.Material3.Button.TonalButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Explain with AI"
+                        android:text="@string/word_explain_ai"
                         android:textSize="12sp" />
                 </LinearLayout>
 

@@ -25,7 +25,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Speaker A"
+                android:text="@string/conv_speaker_a"
                 android:textAppearance="?attr/textAppearanceLabelMedium" />
 
             <com.google.android.material.button.MaterialButton
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
-            android:text="Speak (A)"
+            android:text="@string/conv_speak_a"
             app:icon="@drawable/ic_mic" />
 
     </LinearLayout>
@@ -74,7 +74,7 @@
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Clear conversation" />
+        android:text="@string/conv_clear" />
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
@@ -99,7 +99,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Speaker B"
+                android:text="@string/conv_speaker_b"
                 android:textAppearance="?attr/textAppearanceLabelMedium" />
 
             <com.google.android.material.button.MaterialButton
@@ -124,7 +124,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
-            android:text="Speak (B)"
+            android:text="@string/conv_speak_b"
             app:icon="@drawable/ic_mic" />
 
     </LinearLayout>

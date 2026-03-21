@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="ZubanX Premium"
+                android:text="@string/premium_title"
                 android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="?attr/colorPrimary" />
 
@@ -67,14 +67,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Feature"
+                        android:text="@string/premium_col_feature"
                         android:textAppearance="?attr/textAppearanceLabelMedium" />
 
                     <TextView
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Premium"
+                        android:text="@string/premium_col_premium"
                         android:textColor="?attr/colorPrimary"
                         android:textAppearance="?attr/textAppearanceLabelMedium" />
 
@@ -82,44 +82,44 @@
                         android:layout_width="48dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Free"
+                        android:text="@string/premium_col_free"
                         android:textAppearance="?attr/textAppearanceLabelMedium" />
                 </LinearLayout>
 
                 <!-- Feature rows: static -->
                 <!-- Row 1 -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="40dp" android:orientation="horizontal" android:gravity="center_vertical">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Translate Any Text" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/premium_feat_translate" android:textAppearance="?attr/textAppearanceBodySmall" />
                     <TextView android:layout_width="60dp" android:layout_height="wrap_content" android:gravity="center" android:text="✓" android:textColor="?attr/colorPrimary" />
                     <TextView android:layout_width="48dp" android:layout_height="wrap_content" android:gravity="center" android:text="✓" />
                 </LinearLayout>
                 <!-- Row 2 -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="40dp" android:orientation="horizontal" android:gravity="center_vertical">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="All Languages Support" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/premium_feat_languages" android:textAppearance="?attr/textAppearanceBodySmall" />
                     <TextView android:layout_width="60dp" android:layout_height="wrap_content" android:gravity="center" android:text="✓" android:textColor="?attr/colorPrimary" />
                     <TextView android:layout_width="48dp" android:layout_height="wrap_content" android:gravity="center" android:text="✓" />
                 </LinearLayout>
                 <!-- Row 3 -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="40dp" android:orientation="horizontal" android:gravity="center_vertical">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Camera + Voice Translate" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/premium_feat_camera" android:textAppearance="?attr/textAppearanceBodySmall" />
                     <TextView android:layout_width="60dp" android:layout_height="wrap_content" android:gravity="center" android:text="✓" android:textColor="?attr/colorPrimary" />
                     <TextView android:layout_width="48dp" android:layout_height="wrap_content" android:gravity="center" android:text="✓" />
                 </LinearLayout>
                 <!-- Row 4 -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="40dp" android:orientation="horizontal" android:gravity="center_vertical">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="AI Agent" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/premium_feat_ai" android:textAppearance="?attr/textAppearanceBodySmall" />
                     <TextView android:layout_width="60dp" android:layout_height="wrap_content" android:gravity="center" android:text="✓" android:textColor="?attr/colorPrimary" />
                     <TextView android:layout_width="48dp" android:layout_height="wrap_content" android:gravity="center" android:text="—" />
                 </LinearLayout>
                 <!-- Row 5 -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="40dp" android:orientation="horizontal" android:gravity="center_vertical">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="VIP Customer Support" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/premium_feat_support" android:textAppearance="?attr/textAppearanceBodySmall" />
                     <TextView android:layout_width="60dp" android:layout_height="wrap_content" android:gravity="center" android:text="✓" android:textColor="?attr/colorPrimary" />
                     <TextView android:layout_width="48dp" android:layout_height="wrap_content" android:gravity="center" android:text="—" />
                 </LinearLayout>
                 <!-- Row 6 -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="40dp" android:orientation="horizontal" android:gravity="center_vertical">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Remove Ads" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/premium_feat_ads" android:textAppearance="?attr/textAppearanceBodySmall" />
                     <TextView android:layout_width="60dp" android:layout_height="wrap_content" android:gravity="center" android:text="✓" android:textColor="?attr/colorPrimary" />
                     <TextView android:layout_width="48dp" android:layout_height="wrap_content" android:gravity="center" android:text="—" />
                 </LinearLayout>
@@ -156,7 +156,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Weekly"
+                        android:text="@string/premium_weekly"
                         android:textAppearance="?attr/textAppearanceLabelMedium" />
 
                     <TextView
@@ -192,7 +192,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Monthly"
+                        android:text="@string/premium_monthly"
                         android:textAppearance="?attr/textAppearanceLabelMedium" />
 
                     <TextView
@@ -228,7 +228,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Yearly"
+                        android:text="@string/premium_yearly"
                         android:textAppearance="?attr/textAppearanceLabelMedium" />
 
                     <TextView
@@ -254,7 +254,7 @@
                 android:id="@+id/btnSubscribe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Subscribe Now" />
+                android:text="@string/premium_subscribe" />
 
             <ProgressBar
                 android:id="@+id/progressPurchasing"
@@ -271,7 +271,7 @@
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Restore Purchase" />
+            android:text="@string/premium_restore" />
 
         <!-- Links -->
         <LinearLayout
@@ -285,7 +285,7 @@
                 android:id="@+id/tvPrivacyPolicy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Privacy Policy"
+                android:text="@string/premium_privacy"
                 android:textColor="?attr/colorPrimary"
                 android:padding="4dp"
                 android:textAppearance="?attr/textAppearanceLabelMedium" />
@@ -300,7 +300,7 @@
                 android:id="@+id/tvTerms"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Terms of Service"
+                android:text="@string/premium_terms"
                 android:textColor="?attr/colorPrimary"
                 android:padding="4dp"
                 android:textAppearance="?attr/textAppearanceLabelMedium" />

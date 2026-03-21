@@ -16,7 +16,7 @@
             android:id="@+id/etLangSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search language"
+            android:hint="@string/translate_search_language"
             android:imeOptions="actionSearch"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>

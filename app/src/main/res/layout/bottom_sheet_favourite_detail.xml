@@ -42,21 +42,21 @@
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Copy" />
+            android:text="@string/bs_copy" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnShare"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share" />
+            android:text="@string/bs_share" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSpeak"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Speak" />
+            android:text="@string/bs_speak" />
 
     </LinearLayout>
 

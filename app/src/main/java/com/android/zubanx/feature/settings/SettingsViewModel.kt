@@ -42,7 +42,7 @@ class SettingsViewModel(
             SettingsContract.Event.NavigateToFavourites ->
                 sendEffect(SettingsContract.Effect.Navigate(R.id.action_settings_to_favourite))
             SettingsContract.Event.NavigateToHistory ->
-                sendEffect(SettingsContract.Effect.ShowToast("History coming soon"))
+                sendEffect(SettingsContract.Effect.ShowToast(R.string.toast_history_soon))
             SettingsContract.Event.ShowAiTonePicker ->
                 sendEffect(SettingsContract.Effect.ShowAiToneDialog(state.value.aiTone))
             is SettingsContract.Event.SetAiTone -> viewModelScope.launch {

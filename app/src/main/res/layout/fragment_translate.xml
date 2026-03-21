@@ -15,7 +15,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="ZubanX"
+            app:title="@string/translate_toolbar_title"
             app:menu="@menu/menu_translate_toolbar" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -38,7 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Detect Language"
+            android:text="@string/translate_detect_language"
             android:textAlignment="textStart"
             android:maxLines="1"
             android:ellipsize="end" />
@@ -102,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:minHeight="100dp"
                         android:gravity="top|start"
-                        android:hint="Enter text to translate"
+                        android:hint="@string/translate_hint"
                         android:inputType="textMultiLine|textCapSentences"
                         android:background="@null"
                         android:textSize="16sp"
@@ -157,7 +157,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="12dp"
-                android:text="Translate"
+                android:text="@string/translate_button"
                 android:textSize="16sp"
                 app:cornerRadius="12dp" />
 
@@ -271,7 +271,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Recent Translations"
+                android:text="@string/translate_recent"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="?attr/colorOnSurfaceVariant"

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.zubanx.R
 import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
@@ -85,7 +86,7 @@ class PhrasesCategoryFragment : BaseFragment<FragmentPhrasesCategoryBinding>(
                 is PhrasesCategoryContract.Effect.CopyToClipboard -> {
                     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("phrase", effect.text))
-                    requireContext().toast("Copied")
+                    requireContext().toast(getString(R.string.toast_copied))
                 }
                 is PhrasesCategoryContract.Effect.ShowToast ->
                     requireContext().toast(effect.message)
@@ -97,7 +98,7 @@ class PhrasesCategoryFragment : BaseFragment<FragmentPhrasesCategoryBinding>(
         val languages = LanguageItem.ALL.filter { it != LanguageItem.DETECT }
         val names = languages.map { it.name }.toTypedArray()
         AlertDialog.Builder(requireContext())
-            .setTitle("Select language")
+            .setTitle(R.string.dialog_select_language)
             .setItems(names) { _, which ->
                 val selected = languages[which]
                 viewModel.onEvent(
