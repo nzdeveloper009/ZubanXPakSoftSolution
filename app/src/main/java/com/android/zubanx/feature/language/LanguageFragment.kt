@@ -1,5 +1,6 @@
 package com.android.zubanx.feature.language
 
+import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.navigation.fragment.findNavController
 import com.android.zubanx.R
@@ -39,10 +40,13 @@ class LanguageFragment : BaseFragment<FragmentLanguageBinding>(FragmentLanguageB
         collectFlow(viewModel.effect) { effect ->
             when (effect) {
                 is LanguageContract.Effect.ApplyLocaleAndRestart -> {
-                    // recreate() discards back stack and restores from savedInstanceState,
-                    // naturally landing on the start destination. attachBaseContext handles
-                    // the actual locale application on restart.
-                    requireActivity().recreate()
+                    // Clear the task stack and start fresh so the nav back stack is not
+                    // restored to the Language screen. attachBaseContext in BaseActivity
+                    // reads the new locale from DataStore on the fresh start.
+                    val intent = requireActivity().intent
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    requireActivity().finish()
+                    startActivity(intent)
                 }
             }
         }
