@@ -86,6 +86,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             R.id.phrasesZoomFragment,
             R.id.premiumFragment,
             R.id.wordDetailFragment,
+            R.id.languageFragment,
         )
     }
 }

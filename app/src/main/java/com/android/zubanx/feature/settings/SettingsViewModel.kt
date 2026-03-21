@@ -49,8 +49,7 @@ class SettingsViewModel(
                 appPreferences.setAiTone(event.tone.key)
             }
             SettingsContract.Event.NavigateToLanguage ->
-                // TODO: Uncomment after Task 12 adds action_settings_to_language to nav_settings.xml
-                sendEffect(SettingsContract.Effect.ShowToast("Language settings coming soon"))
+                sendEffect(SettingsContract.Effect.Navigate(R.id.action_settings_to_language))
             SettingsContract.Event.OpenPrivacyPolicy ->
                 sendEffect(SettingsContract.Effect.OpenUrl("https://zubanx.app/privacy"))
             SettingsContract.Event.OpenTerms ->

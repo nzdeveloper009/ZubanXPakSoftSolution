@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_language"
+    app:startDestination="@id/languageFragment">
+
+    <fragment
+        android:id="@+id/languageFragment"
+        android:name="com.android.zubanx.feature.language.LanguageFragment"
+        android:label="Language" />
+
+</navigation>

@@ -16,6 +16,7 @@
     <include app:graph="@navigation/nav_favourite" />
     <include app:graph="@navigation/nav_onscreen" />
     <include app:graph="@navigation/nav_imagetext" />
+    <include app:graph="@navigation/nav_language" />
 
     <action
         android:id="@+id/action_global_onboarding_to_translate"

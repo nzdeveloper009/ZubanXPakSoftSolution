@@ -17,6 +17,10 @@
             android:id="@+id/action_settings_to_favourite"
             app:destination="@id/nav_favourite" />
 
+        <action
+            android:id="@+id/action_settings_to_language"
+            app:destination="@id/nav_language" />
+
     </fragment>
 
 </navigation>
