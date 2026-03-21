@@ -123,4 +123,8 @@
     <string name="phrases_cd_copy">Copy translation</string>
     <string name="phrases_cd_zoom">Zoom translation</string>
     <string name="phrases_cd_swap_languages">Swap languages</string>
+    <string name="story_btn_translate">Translate</string>
+    <string name="story_cd_expand">Expand story</string>
+    <string name="story_cd_speak">Speak translation</string>
+    <string name="story_cd_copy">Copy story</string>
 </resources>

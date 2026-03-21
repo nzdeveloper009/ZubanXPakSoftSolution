@@ -36,7 +36,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_expand_more"
-                android:contentDescription="expand" />
+                android:contentDescription="@string/story_cd_expand" />
 
         </LinearLayout>
 
@@ -113,7 +113,7 @@
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="Translate"
+                    android:text="@string/story_btn_translate"
                     android:textSize="12sp" />
 
                 <ImageButton
@@ -123,7 +123,7 @@
                     android:layout_marginStart="8dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_volume_up"
-                    android:contentDescription="speak" />
+                    android:contentDescription="@string/story_cd_speak" />
 
                 <ImageButton
                     android:id="@+id/btnCopy"
@@ -132,7 +132,7 @@
                     android:layout_marginStart="4dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_copy"
-                    android:contentDescription="copy" />
+                    android:contentDescription="@string/story_cd_copy" />
 
             </LinearLayout>
 
