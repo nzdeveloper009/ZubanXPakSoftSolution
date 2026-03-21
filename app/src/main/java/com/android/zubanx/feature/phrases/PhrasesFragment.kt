@@ -1,12 +1,7 @@
 package com.android.zubanx.feature.phrases
 
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.ViewGroup
-import androidx.core.view.MenuProvider
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.android.zubanx.R
 import androidx.recyclerview.widget.DiffUtil
@@ -31,18 +26,6 @@ class PhrasesFragment : BaseFragment<FragmentPhrasesBinding>(FragmentPhrasesBind
     override fun setupViews() {
         binding.rvCategories.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.rvCategories.adapter = adapter
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_phrases, menu)
-            }
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.action_idioms   -> { findNavController().navigate(R.id.nav_idioms);  true }
-                    R.id.action_stories  -> { findNavController().navigate(R.id.nav_story);   true }
-                    else -> false
-                }
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     override fun observeState() {
