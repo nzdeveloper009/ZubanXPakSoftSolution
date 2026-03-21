@@ -19,7 +19,7 @@
     <item
         android:id="@+id/nav_phrases"
         android:icon="@drawable/ic_nav_phrases"
-        android:title="Phrases" />
+        android:title="@string/nav_learn" />
 
     <item
         android:id="@+id/nav_favourite"

@@ -2,8 +2,21 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_phrases"
-    android:label="Phrases"
-    app:startDestination="@id/phrasesFragment">
+    android:label="Learn"
+    app:startDestination="@id/learnFragment">
+
+    <fragment
+        android:id="@+id/learnFragment"
+        android:name="com.android.zubanx.feature.learn.LearnFragment"
+        android:label="Learn">
+        <action
+            android:id="@+id/action_learn_to_phrases"
+            app:destination="@id/phrasesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/phrasesFragment"
@@ -11,7 +24,11 @@
         android:label="Phrases">
         <action
             android:id="@+id/action_phrases_to_category"
-            app:destination="@id/phrasesCategoryFragment" />
+            app:destination="@id/phrasesCategoryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
