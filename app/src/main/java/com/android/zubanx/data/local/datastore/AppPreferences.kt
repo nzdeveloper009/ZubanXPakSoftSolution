@@ -14,6 +14,9 @@ interface AppPreferences {
     val autoSpeak: Flow<Boolean>
     val floatingOverlay: Flow<Boolean>
 
+    val aiTone: Flow<String>
+    val appLanguage: Flow<String>
+
     suspend fun setTheme(value: String)
     suspend fun setSelectedExpert(value: String)
     suspend fun setSourceLang(value: String)
@@ -23,4 +26,6 @@ interface AppPreferences {
     suspend fun setOnboardingComplete(value: Boolean)
     suspend fun setAutoSpeak(value: Boolean)
     suspend fun setFloatingOverlay(value: Boolean)
+    suspend fun setAiTone(value: String)
+    suspend fun setAppLanguage(value: String)
 }

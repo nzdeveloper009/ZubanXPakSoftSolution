@@ -1,14 +1,17 @@
 package com.android.zubanx.feature.phrases
 
 import com.android.zubanx.core.network.NetworkResult
+import com.android.zubanx.data.local.datastore.AppPreferences
 import com.android.zubanx.data.remote.dto.TranslateResponseDto
 import com.android.zubanx.domain.usecase.phrases.TranslatePhraseUseCase
 import com.android.zubanx.feature.phrases.data.PhrasesData
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -24,13 +27,16 @@ import org.junit.Test
 class PhrasesCategoryViewModelTest {
 
     private val translateUseCase: TranslatePhraseUseCase = mockk()
+    private val appPreferences: AppPreferences = mockk()
     private lateinit var viewModel: PhrasesCategoryViewModel
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = PhrasesCategoryViewModel(translateUseCase, "dining")
+        every { appPreferences.sourceLang } returns flowOf("en")
+        every { appPreferences.targetLang } returns flowOf("ur")
+        viewModel = PhrasesCategoryViewModel(translateUseCase, appPreferences, "dining")
     }
 
     @After

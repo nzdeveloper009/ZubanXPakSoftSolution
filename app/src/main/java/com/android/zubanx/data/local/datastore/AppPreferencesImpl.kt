@@ -2,6 +2,7 @@ package com.android.zubanx.data.local.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
+import com.android.zubanx.domain.model.AiTone
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -17,6 +18,8 @@ class AppPreferencesImpl(private val dataStore: DataStore<Preferences>) : AppPre
         val ONBOARDING_COMPLETE = booleanPreferencesKey("onboarding_complete")
         val AUTO_SPEAK = booleanPreferencesKey("auto_speak")
         val FLOATING_OVERLAY = booleanPreferencesKey("floating_overlay")
+        val AI_TONE = stringPreferencesKey("ai_tone")
+        val APP_LANGUAGE = stringPreferencesKey("app_language")
     }
 
     override val theme: Flow<String> = dataStore.data.map { it[Keys.THEME] ?: "SYSTEM" }
@@ -28,6 +31,8 @@ class AppPreferencesImpl(private val dataStore: DataStore<Preferences>) : AppPre
     override val onboardingComplete: Flow<Boolean> = dataStore.data.map { it[Keys.ONBOARDING_COMPLETE] ?: false }
     override val autoSpeak: Flow<Boolean> = dataStore.data.map { it[Keys.AUTO_SPEAK] ?: false }
     override val floatingOverlay: Flow<Boolean> = dataStore.data.map { it[Keys.FLOATING_OVERLAY] ?: false }
+    override val aiTone: Flow<String> = dataStore.data.map { it[Keys.AI_TONE] ?: AiTone.ORIGINAL.key }
+    override val appLanguage: Flow<String> = dataStore.data.map { it[Keys.APP_LANGUAGE] ?: "en" }
 
     override suspend fun setTheme(value: String) { dataStore.edit { it[Keys.THEME] = value } }
     override suspend fun setSelectedExpert(value: String) { dataStore.edit { it[Keys.SELECTED_EXPERT] = value } }
@@ -38,4 +43,6 @@ class AppPreferencesImpl(private val dataStore: DataStore<Preferences>) : AppPre
     override suspend fun setOnboardingComplete(value: Boolean) { dataStore.edit { it[Keys.ONBOARDING_COMPLETE] = value } }
     override suspend fun setAutoSpeak(value: Boolean) { dataStore.edit { it[Keys.AUTO_SPEAK] = value } }
     override suspend fun setFloatingOverlay(value: Boolean) { dataStore.edit { it[Keys.FLOATING_OVERLAY] = value } }
+    override suspend fun setAiTone(value: String) { dataStore.edit { it[Keys.AI_TONE] = value } }
+    override suspend fun setAppLanguage(value: String) { dataStore.edit { it[Keys.APP_LANGUAGE] = value } }
 }
