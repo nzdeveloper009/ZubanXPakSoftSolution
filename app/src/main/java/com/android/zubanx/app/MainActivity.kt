@@ -78,14 +78,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
          * Fragment destination IDs where the bottom navigation bar is hidden.
          * Uncomment each ID as the corresponding fragment is added in feature plans.
          */
-        private val BOTTOM_NAV_HIDDEN_DESTINATIONS = setOf<Int>(
+        private val BOTTOM_NAV_HIDDEN_DESTINATIONS = setOf(
             R.id.splashFragment,
             R.id.onboardingFragment,
             R.id.settingsFragment,
             R.id.phrasesCategoryFragment,
             R.id.phrasesZoomFragment,
-            // R.id.premiumFragment,
-            // R.id.wordDetailFragment,
+            R.id.premiumFragment,
+            R.id.wordDetailFragment,
         )
     }
 }

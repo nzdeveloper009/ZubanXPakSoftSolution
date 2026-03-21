@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -89,8 +90,12 @@ class FavouriteFragment : BaseFragment<FragmentFavouriteBinding>(FragmentFavouri
                         .show(childFragmentManager, "favourite_detail")
                 }
                 is FavouriteContract.Effect.NavigateToWordDetail -> {
-                    // Navigation wired in Task 7 — show toast as temporary fallback
-                    requireContext().toast("Opening ${effect.word}...")
+                    val action = FavouriteFragmentDirections
+                        .actionFavouriteToWordDetail(
+                            word = effect.word,
+                            language = effect.language
+                        )
+                    findNavController().navigate(action)
                 }
                 is FavouriteContract.Effect.CopyToClipboard -> {
                     val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

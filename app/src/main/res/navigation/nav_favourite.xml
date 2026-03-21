@@ -7,6 +7,27 @@
     <fragment
         android:id="@+id/favouriteFragment"
         android:name="com.android.zubanx.feature.favourite.FavouriteFragment"
-        android:label="Favourites" />
+        android:label="Favourites">
+        <action
+            android:id="@+id/action_favourite_to_wordDetail"
+            app:destination="@id/wordDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/wordDetailFragment"
+        android:name="com.android.zubanx.feature.dictionary.WordDetailFragment"
+        android:label="Word Detail">
+        <argument
+            android:name="word"
+            app:argType="string" />
+        <argument
+            android:name="language"
+            app:argType="string"
+            android:defaultValue="en" />
+    </fragment>
 
 </navigation>
