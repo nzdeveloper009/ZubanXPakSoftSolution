@@ -29,7 +29,7 @@ object StoryCategoryContract {
         data class LangSourceSelected(val lang: LanguageItem) : Event()
         data class LangTargetSelected(val lang: LanguageItem) : Event()
         data object SwapLanguages : Event()
-        data class TranslateStory(val index: Int) : Event()
+        data class TranslateStory(val index: Int) : Event() // explicit tap required; not fired automatically on expand
         data class RetryTranslation(val index: Int) : Event()
         data class SpeakStory(val index: Int) : Event()
         data class CopyStory(val index: Int) : Event()

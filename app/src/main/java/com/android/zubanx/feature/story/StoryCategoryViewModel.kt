@@ -53,6 +53,11 @@ class StoryCategoryViewModel(
     private val activeState get() = state.value as? StoryCategoryContract.State.Active
 
     private fun expand(index: Int) {
+        val s = activeState ?: return
+        if (s.expandedIndex == index) {
+            setState { (this as StoryCategoryContract.State.Active).copy(expandedIndex = null) }
+            return
+        }
         setState { (this as StoryCategoryContract.State.Active).copy(expandedIndex = index) }
     }
 
