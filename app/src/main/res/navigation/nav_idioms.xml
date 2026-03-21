@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_idioms"
-    android:label="Idioms">
-    <!-- Fragments added in Plan 6: Dictionary & Content Features -->
+    app:startDestination="@id/idiomsFragment">
+
+    <fragment
+        android:id="@+id/idiomsFragment"
+        android:name="com.android.zubanx.feature.idioms.IdiomsFragment"
+        android:label="Idioms">
+        <action
+            android:id="@+id/action_idioms_to_category"
+            app:destination="@id/idiomsCategoryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/idiomsCategoryFragment"
+        android:name="com.android.zubanx.feature.idioms.IdiomsCategoryFragment"
+        android:label="Idiom Category">
+        <argument
+            android:name="categoryId"
+            app:argType="string" />
+    </fragment>
+
 </navigation>

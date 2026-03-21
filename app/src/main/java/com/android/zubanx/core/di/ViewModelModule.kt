@@ -12,6 +12,10 @@ import com.android.zubanx.feature.translate.TranslateViewModel
 import com.android.zubanx.feature.phrases.PhrasesViewModel
 import com.android.zubanx.feature.phrases.PhrasesCategoryViewModel
 import com.android.zubanx.feature.language.LanguageViewModel
+import com.android.zubanx.feature.idioms.IdiomsViewModel
+import com.android.zubanx.feature.idioms.IdiomsCategoryViewModel
+import com.android.zubanx.feature.story.StoryViewModel
+import com.android.zubanx.feature.story.StoryCategoryViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -29,4 +33,8 @@ val viewModelModule = module {
     viewModelOf(::PhrasesViewModel)
     viewModel { params -> PhrasesCategoryViewModel(get(), get(), params.get()) }
     viewModelOf(::LanguageViewModel)
+    viewModelOf(::IdiomsViewModel)
+    viewModel { params -> IdiomsCategoryViewModel(get(), get(), params.get()) }
+    viewModelOf(::StoryViewModel)
+    viewModel { params -> StoryCategoryViewModel(get(), get(), params.get()) }
 }
