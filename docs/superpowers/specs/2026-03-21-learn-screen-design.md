@@ -54,7 +54,7 @@ Back navigation from `PhrasesFragment` returns to `LearnFragment` automatically 
 ### Modified
 | File | Change |
 |---|---|
-| `res/navigation/nav_phrases.xml` | Add `learnFragment` as start destination; add `action_learn_to_phrases` action to `phrasesFragment` |
+| `res/navigation/nav_phrases.xml` | Change `app:startDestination` from `@id/phrasesFragment` to `@id/learnFragment`; add `<fragment>` entry for `learnFragment` with `action_learn_to_phrases` action pointing to `phrasesFragment` |
 | `res/menu/bottom_nav_menu.xml` | Change title of `nav_phrases` item from "Phrases" to `@string/nav_learn` |
 | `feature/phrases/PhrasesFragment.kt` | Remove `MenuProvider` / overflow menu (Idioms/Stories navigation moves to LearnFragment) |
 | `res/menu/menu_phrases.xml` | Delete file (unused after PhrasesFragment cleanup) |
@@ -78,16 +78,21 @@ Defined inline in `LearnFragment`. The list is constructed in `onViewCreated` / 
 ```kotlin
 listOf(
     LearnSection(R.string.learn_section_phrases, R.drawable.ic_nav_phrases) {
-        findNavController().navigate(R.id.action_learn_to_phrases)
+        // safeNavigate used for Safe Args direction (prevents double-tap crash)
+        safeNavigate(LearnFragmentDirections.actionLearnToPhrases())
     },
     LearnSection(R.string.learn_section_idioms, R.drawable.ic_category_greeting) {
+        // cross-graph navigation uses raw ID (no NavDirections available for included graphs)
         findNavController().navigate(R.id.nav_idioms)
     },
     LearnSection(R.string.learn_section_story, R.drawable.ic_category_hotel) {
+        // cross-graph navigation uses raw ID (no NavDirections available for included graphs)
         findNavController().navigate(R.id.nav_story)
     }
 )
 ```
+
+Import: `import com.android.zubanx.core.navigation.safeNavigate`
 
 Icons reuse existing drawables already in the project.
 
