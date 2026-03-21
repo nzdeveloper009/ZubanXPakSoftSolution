@@ -20,21 +20,18 @@ class SettingsViewModel(
                 appPreferences.isPremium,
                 appPreferences.offlineMode,
                 appPreferences.autoSpeak,
-                appPreferences.floatingOverlay
-            ) { isPremium, offlineMode, autoSpeak, floatingOverlay ->
+                appPreferences.floatingOverlay,
+                appPreferences.aiTone
+            ) { isPremium, offlineMode, autoSpeak, floatingOverlay, aiToneKey ->
                 SettingsContract.State(
                     isPremium = isPremium,
                     offlineMode = offlineMode,
                     floatingOverlay = floatingOverlay,
                     autoSpeak = autoSpeak,
+                    aiTone = AiTone.fromKey(aiToneKey),
                     appVersion = BuildConfig.VERSION_NAME
                 )
             }.collect { newState -> setState { newState } }
-        }
-        viewModelScope.launch {
-            appPreferences.aiTone.collect { key ->
-                setState { copy(aiTone = AiTone.fromKey(key)) }
-            }
         }
     }
 
