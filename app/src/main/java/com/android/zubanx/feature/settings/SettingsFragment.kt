@@ -10,7 +10,9 @@ import com.android.zubanx.core.base.BaseFragment
 import com.android.zubanx.core.utils.collectFlow
 import com.android.zubanx.core.utils.toast
 import com.android.zubanx.databinding.FragmentSettingsBinding
+import com.android.zubanx.domain.model.AiTone
 import com.android.zubanx.service.FloatingOverlayService
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsBinding::inflate) {
@@ -152,7 +154,17 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsB
                 }
                 is SettingsContract.Effect.ShowToast -> requireContext().toast(effect.message)
                 is SettingsContract.Effect.ShowAiToneDialog -> {
-                    // TODO(Task 5): Show AI tone picker dialog
+                    val tones = AiTone.entries.toTypedArray()
+                    val labels = tones.map { "${it.label} — ${it.description}" }.toTypedArray()
+                    val currentIndex = tones.indexOf(effect.currentTone).coerceAtLeast(0)
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("AI Tone")
+                        .setSingleChoiceItems(labels, currentIndex) { dialog, which ->
+                            viewModel.onEvent(SettingsContract.Event.SetAiTone(tones[which]))
+                            dialog.dismiss()
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .show()
                 }
             }
         }
