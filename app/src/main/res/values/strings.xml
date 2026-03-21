@@ -1,9 +1,119 @@
 <resources>
+    <!-- App -->
     <string name="app_name">ZubanX</string>
     <string name="accessibility_service_label">ZubanX On-Screen Translate</string>
+
+    <!-- Common buttons -->
     <string name="btn_skip">Skip</string>
     <string name="btn_next">Next</string>
     <string name="btn_done">Done</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_delete">Delete</string>
+
+    <!-- Common actions -->
+    <string name="action_copy">Copy</string>
+    <string name="action_share">Share</string>
+    <string name="action_speak">Speak</string>
+
+    <!-- Common toasts -->
+    <string name="toast_copied">Copied</string>
+    <string name="toast_copied_clipboard">Copied to clipboard</string>
+    <string name="toast_added_favourites">Added to favourites</string>
+    <string name="toast_removed_favourites">Removed from favourites</string>
+    <string name="toast_history_soon">History coming soon</string>
+    <string name="toast_coming_soon">Coming soon</string>
+    <string name="toast_nav_unavailable">Navigation unavailable</string>
+    <string name="toast_definition_copied">Definition copied</string>
+
+    <!-- Common dialogs -->
+    <string name="dialog_select_language">Select language</string>
+
+    <!-- Chooser titles -->
+    <string name="chooser_share_app">Share ZubanX</string>
+    <string name="chooser_share_translation">Share translation</string>
+    <string name="chooser_share">Share</string>
+
+    <!-- Mic prompt -->
+    <string name="mic_speak_now">Speak Now</string>
+
+    <!-- Translate screen -->
+    <string name="translate_detect_language">Detect Language</string>
+    <string name="translate_hint">Enter text to translate</string>
+    <string name="translate_button">Translate</string>
+    <string name="translate_recent">Recent Translations</string>
+    <string name="translate_toolbar_title">ZubanX</string>
+    <string name="translate_search_language">Search language</string>
+
+    <!-- Dictionary screen -->
+    <string name="dict_search_hint">Search word</string>
+    <string name="dict_recent_lookups">Recent Lookups</string>
+    <string name="dict_full_detail">Full Detail</string>
+    <string name="dict_copy">Copy</string>
+
+    <!-- Word Detail screen -->
+    <string name="word_definition">Definition</string>
+    <string name="word_examples">Examples</string>
+    <string name="word_ai_insight">AI Insight</string>
+    <string name="word_explain_ai">Explain with AI</string>
+
+    <!-- Settings screen -->
+    <string name="settings_upgrade_premium">Upgrade to Premium</string>
+    <string name="settings_premium_active">Premium Active ✓</string>
+    <string name="settings_history">History</string>
+    <string name="settings_favourites">Favourites</string>
+    <string name="settings_ai_tone">AI Tone</string>
+    <string name="settings_translate_offline">Translate Offline</string>
+    <string name="settings_floating_icon">Floating Icon</string>
+    <string name="settings_auto_speak">Auto Speak</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_terms">Terms of Service</string>
+    <string name="settings_privacy">Privacy Policy</string>
+    <string name="settings_rate_us">Rate Us</string>
+    <string name="settings_share_app">Share App</string>
+    <string name="settings_support">Customer Support</string>
+    <string name="settings_ai_tone_dialog_title">AI Tone</string>
+
+    <!-- Favourites screen -->
+    <string name="fav_tab_translate">Translate</string>
+    <string name="fav_tab_dictionary">Dictionary</string>
+    <string name="fav_empty_translate">No translation favourites yet</string>
+    <string name="fav_empty_dict">No dictionary favourites yet</string>
+
+    <!-- Bottom sheet -->
+    <string name="bs_copy">Copy</string>
+    <string name="bs_share">Share</string>
+    <string name="bs_speak">Speak</string>
+
+    <!-- Conversation screen -->
+    <string name="conv_speaker_a">Speaker A</string>
+    <string name="conv_speaker_b">Speaker B</string>
+    <string name="conv_speak_a">Speak (A)</string>
+    <string name="conv_speak_b">Speak (B)</string>
+    <string name="conv_clear">Clear conversation</string>
+
+    <!-- Language screen -->
+    <string name="screen_language">Language</string>
+
+    <!-- Premium screen -->
+    <string name="premium_title">ZubanX Premium</string>
+    <string name="premium_col_feature">Feature</string>
+    <string name="premium_col_premium">Premium</string>
+    <string name="premium_col_free">Free</string>
+    <string name="premium_feat_translate">Translate Any Text</string>
+    <string name="premium_feat_languages">All Languages Support</string>
+    <string name="premium_feat_camera">Camera + Voice Translate</string>
+    <string name="premium_feat_ai">AI Agent</string>
+    <string name="premium_feat_support">VIP Customer Support</string>
+    <string name="premium_feat_ads">Remove Ads</string>
+    <string name="premium_weekly">Weekly</string>
+    <string name="premium_monthly">Monthly</string>
+    <string name="premium_yearly">Yearly</string>
+    <string name="premium_subscribe">Subscribe Now</string>
+    <string name="premium_restore">Restore Purchase</string>
+    <string name="premium_privacy">Privacy Policy</string>
+    <string name="premium_terms">Terms of Service</string>
+
+    <!-- Phrases -->
     <string name="phrases_speak">Speak</string>
     <string name="phrases_translation_failed">Translation failed</string>
     <string name="phrases_cd_expand">Expand phrase</string>
