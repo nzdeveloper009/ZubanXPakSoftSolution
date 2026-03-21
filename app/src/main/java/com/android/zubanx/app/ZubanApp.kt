@@ -1,9 +1,7 @@
 package com.android.zubanx.app
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.android.cipherlib.NativeLib
 import com.android.zubanx.BuildConfig
 import com.android.zubanx.billing.BillingManager
@@ -18,10 +16,6 @@ import com.android.zubanx.core.di.ttsModule
 import com.android.zubanx.core.di.useCaseModule
 import com.android.zubanx.core.di.utilsModule
 import com.android.zubanx.core.di.viewModelModule
-import com.android.zubanx.core.utils.LocaleHelper
-import com.android.zubanx.core.utils.zubanDataStore
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -30,13 +24,6 @@ import org.koin.core.logger.Level
 import timber.log.Timber
 
 class ZubanApp : Application() {
-
-    override fun attachBaseContext(newBase: Context) {
-        val langCode = runBlocking {
-            newBase.zubanDataStore.data.first()[stringPreferencesKey("app_language")] ?: "en"
-        }
-        super.attachBaseContext(LocaleHelper.applyLocale(newBase, langCode))
-    }
 
     override fun onCreate() {
         super.onCreate()
