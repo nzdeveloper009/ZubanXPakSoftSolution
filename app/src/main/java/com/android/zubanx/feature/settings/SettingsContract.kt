@@ -3,11 +3,12 @@ package com.android.zubanx.feature.settings
 import com.android.zubanx.core.mvi.UiEffect
 import com.android.zubanx.core.mvi.UiEvent
 import com.android.zubanx.core.mvi.UiState
+import com.android.zubanx.domain.model.AiTone
 
 object SettingsContract {
     data class State(
         val isPremium: Boolean = false,
-        val aiTone: String = "Original",
+        val aiTone: AiTone = AiTone.ORIGINAL,
         val offlineMode: Boolean = false,
         val floatingOverlay: Boolean = false,
         val autoSpeak: Boolean = false,
@@ -18,7 +19,8 @@ object SettingsContract {
         object NavigateToPremium : Event()
         object NavigateToHistory : Event()
         object NavigateToFavourites : Event()
-        object NavigateToAiTone : Event()
+        object ShowAiTonePicker : Event()
+        data class SetAiTone(val tone: AiTone) : Event()
         object NavigateToLanguage : Event()
         object OpenPrivacyPolicy : Event()
         object OpenTerms : Event()
@@ -38,5 +40,6 @@ object SettingsContract {
         object LaunchContactSupport : Effect()
         data class StartFloatingService(val enable: Boolean) : Effect()
         data class ShowToast(val message: String) : Effect()
+        data class ShowAiToneDialog(val currentTone: AiTone) : Effect()
     }
 }

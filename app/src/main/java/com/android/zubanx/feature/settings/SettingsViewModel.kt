@@ -5,6 +5,7 @@ import com.android.zubanx.BuildConfig
 import com.android.zubanx.R
 import com.android.zubanx.core.mvi.BaseViewModel
 import com.android.zubanx.data.local.datastore.AppPreferences
+import com.android.zubanx.domain.model.AiTone
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -19,19 +20,20 @@ class SettingsViewModel(
                 appPreferences.isPremium,
                 appPreferences.offlineMode,
                 appPreferences.autoSpeak,
-                appPreferences.floatingOverlay,
-                appPreferences.selectedExpert
-            ) { isPremium, offlineMode, autoSpeak, floatingOverlay, expert ->
+                appPreferences.floatingOverlay
+            ) { isPremium, offlineMode, autoSpeak, floatingOverlay ->
                 SettingsContract.State(
                     isPremium = isPremium,
-                    aiTone = expert,
                     offlineMode = offlineMode,
                     floatingOverlay = floatingOverlay,
                     autoSpeak = autoSpeak,
                     appVersion = BuildConfig.VERSION_NAME
                 )
-            }.collect { newState ->
-                setState { newState }
+            }.collect { newState -> setState { newState } }
+        }
+        viewModelScope.launch {
+            appPreferences.aiTone.collect { key ->
+                setState { copy(aiTone = AiTone.fromKey(key)) }
             }
         }
     }
@@ -44,9 +46,13 @@ class SettingsViewModel(
                 sendEffect(SettingsContract.Effect.Navigate(R.id.action_settings_to_favourite))
             SettingsContract.Event.NavigateToHistory ->
                 sendEffect(SettingsContract.Effect.ShowToast("History coming soon"))
-            SettingsContract.Event.NavigateToAiTone ->
-                sendEffect(SettingsContract.Effect.ShowToast("AI Tone coming soon"))
+            SettingsContract.Event.ShowAiTonePicker ->
+                sendEffect(SettingsContract.Effect.ShowAiToneDialog(state.value.aiTone))
+            is SettingsContract.Event.SetAiTone -> viewModelScope.launch {
+                appPreferences.setAiTone(event.tone.key)
+            }
             SettingsContract.Event.NavigateToLanguage ->
+                // TODO: Uncomment after Task 12 adds action_settings_to_language to nav_settings.xml
                 sendEffect(SettingsContract.Effect.ShowToast("Language settings coming soon"))
             SettingsContract.Event.OpenPrivacyPolicy ->
                 sendEffect(SettingsContract.Effect.OpenUrl("https://zubanx.app/privacy"))

@@ -32,7 +32,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsB
         binding.cardPremium.setOnClickListener { viewModel.onEvent(SettingsContract.Event.NavigateToPremium) }
         binding.rowHistory.setOnClickListener { viewModel.onEvent(SettingsContract.Event.NavigateToHistory) }
         binding.rowFavourites.setOnClickListener { viewModel.onEvent(SettingsContract.Event.NavigateToFavourites) }
-        binding.rowAiTone.setOnClickListener { viewModel.onEvent(SettingsContract.Event.NavigateToAiTone) }
+        binding.rowAiTone.setOnClickListener { viewModel.onEvent(SettingsContract.Event.ShowAiTonePicker) }
         binding.rowLanguage.setOnClickListener { viewModel.onEvent(SettingsContract.Event.NavigateToLanguage) }
         binding.rowPrivacyPolicy.setOnClickListener { viewModel.onEvent(SettingsContract.Event.OpenPrivacyPolicy) }
         binding.rowTerms.setOnClickListener { viewModel.onEvent(SettingsContract.Event.OpenTerms) }
@@ -63,7 +63,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsB
     override fun observeState() {
         collectFlow(viewModel.state) { state ->
             binding.tvPremiumStatus.text = if (state.isPremium) "Premium Active ✓" else "Upgrade to Premium"
-            binding.tvAiTone.text = state.aiTone
+            binding.tvAiTone.text = state.aiTone.label
             binding.tvVersion.text = "v${state.appVersion}"
 
             // Set switches without triggering listeners to avoid feedback loops
@@ -151,6 +151,9 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>(FragmentSettingsB
                     }
                 }
                 is SettingsContract.Effect.ShowToast -> requireContext().toast(effect.message)
+                is SettingsContract.Effect.ShowAiToneDialog -> {
+                    // TODO(Task 5): Show AI tone picker dialog
+                }
             }
         }
     }
