@@ -44,6 +44,7 @@ class TranslateViewModelTest {
     fun setUp() {
         Dispatchers.setMain(dispatcher)
         every { appPreferences.selectedExpert } returns flowOf("DEFAULT")
+        every { appPreferences.aiTone } returns flowOf("original")
         every { appPreferences.sourceLang } returns flowOf("en")
         every { appPreferences.targetLang } returns flowOf("ur")
         every { historyUseCase() } returns flowOf(emptyList())
@@ -65,7 +66,7 @@ class TranslateViewModelTest {
 
     @Test
     fun `TranslateClicked with text transitions to Success`() = runTest {
-        coEvery { translateUseCase("Hello", any(), any(), any()) } returns NetworkResult.Success(
+        coEvery { translateUseCase("Hello", any(), any(), any(), any()) } returns NetworkResult.Success(
             TranslateResponseDto(translatedText = "ہیلو", sourceLang = "en", targetLang = "ur")
         )
         viewModel.onEvent(TranslateContract.Event.InputChanged("Hello"))
@@ -101,7 +102,7 @@ class TranslateViewModelTest {
 
     @Test
     fun `CopyTranslation emits CopyToClipboard effect when in Success state`() = runTest {
-        coEvery { translateUseCase(any(), any(), any(), any()) } returns NetworkResult.Success(
+        coEvery { translateUseCase(any(), any(), any(), any(), any()) } returns NetworkResult.Success(
             TranslateResponseDto(translatedText = "Hola", sourceLang = "en", targetLang = "es")
         )
         viewModel.onEvent(TranslateContract.Event.InputChanged("Hello"))

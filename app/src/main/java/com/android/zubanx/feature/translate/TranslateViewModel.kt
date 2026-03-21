@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.zubanx.core.mvi.BaseViewModel
 import com.android.zubanx.core.network.NetworkResult
 import com.android.zubanx.data.local.datastore.AppPreferences
+import com.android.zubanx.domain.model.AiTone
 import com.android.zubanx.domain.model.FavouriteCategory
 import com.android.zubanx.domain.model.Translation
 import com.android.zubanx.domain.usecase.favourite.DeleteFavouriteUseCase
@@ -32,6 +33,7 @@ class TranslateViewModel(
     private var currentSourceLang = LanguageItem.DETECT
     private var currentTargetLang = LanguageItem.fromCode("en")
     private var currentExpert = "DEFAULT"
+    private var currentAiTone = AiTone.ORIGINAL.key
     private var lastSuccessTranslation: Translation? = null
     private var historyList: List<Translation> = emptyList()
     // key = "${sourceText}|${targetLang}", value = favourite row id
@@ -40,6 +42,7 @@ class TranslateViewModel(
     init {
         viewModelScope.launch {
             currentExpert = appPreferences.selectedExpert.first()
+            currentAiTone = appPreferences.aiTone.first()
             val sourceLangCode = appPreferences.sourceLang.first()
             val targetLangCode = appPreferences.targetLang.first()
             currentSourceLang = if (sourceLangCode == "auto") LanguageItem.DETECT
@@ -125,7 +128,7 @@ class TranslateViewModel(
         }
         setState { TranslateContract.State.Translating }
         viewModelScope.launch {
-            when (val result = translateUseCase(text, currentSourceLang.code, currentTargetLang.code, currentExpert)) {
+            when (val result = translateUseCase(text, currentSourceLang.code, currentTargetLang.code, currentExpert, currentAiTone)) {
                 is NetworkResult.Success -> {
                     val translation = Translation(
                         sourceText = text,
