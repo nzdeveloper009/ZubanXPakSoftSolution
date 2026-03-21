@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TODO: Add Urdu translations for all strings in res/values/strings.xml -->
+    <!-- The locale switching infrastructure is complete. Add translated strings here -->
+    <!-- to enable full Urdu UI. App falls back to English until strings are provided. -->
+</resources>
